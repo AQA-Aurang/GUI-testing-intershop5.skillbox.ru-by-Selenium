@@ -2,17 +2,12 @@ import pytest, time, random, re
 import interhsop5skillbox.utilities as utilities
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.chrome.options import ChromiumOptions
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
-from datetime import datetime
 
-# username = "Ferdinand"
-# password = "ValaVala123'"
-# Ferdinand Emperor of Austria
 usernames = ["Faridun", "Ferdinand"]
 passwords = ["ValayBalay", "ValaVala123'"]
 
@@ -174,7 +169,7 @@ def driver(request):
 
 def navigation_to_personal_details(driver):
     driver.get("https://intershop5.skillbox.ru")
-    driver = login(driver)
+    driver = utilities.login(driver)
 
     driver.find_element(By.LINK_TEXT, "Данные аккаунта").click()
     WebDriverWait(driver, 10).until(EC.title_contains("Мой аккаунт — Skillbox"))
@@ -199,7 +194,7 @@ def modify_one_field_in_account(driver, field_id, new_value):
     driver.find_element(By.LINK_TEXT, "Данные аккаунта").click()
     updated_field = driver.find_element(By.ID, field_id)
     updated_field = updated_field.get_attribute("value")
-    logout(driver)
+    utilities.logout(driver)
 
     return updated_field
 
@@ -245,22 +240,22 @@ def change_password_fields(driver, current_pass, new_pass, repeat_new_pass):
     return driver
 
 # Revert old password
-def revert_password(driver, current_password):
-    driver = login_with_data(driver, usernames[1], current_password)
-
-    driver.find_element(By.LINK_TEXT, "Данные аккаунта").click()
-    WebDriverWait(driver, 10).until(EC.title_contains("Мой аккаунт — Skillbox"))
-
-    expected_header = "ДАННЫЕ УЧЕТНОЙ ЗАПИСИ"
-    actual_header = driver.find_element(By.CLASS_NAME, "post-title")
-
-    driver.find_element(By.ID, "password_current").send_keys(current_password)
-    driver.find_element(By.ID, "password_1").send_keys(passwords[1])
-    driver.find_element(By.ID, "password_2").send_keys(passwords[1])
-    driver.find_element(By.NAME, "save_account_details").click()
-
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "woocommerce-message")))
-    logout(driver)
+# def revert_password(driver, current_password):
+#     driver = login_with_data(driver, usernames[1], current_password)
+#
+#     driver.find_element(By.LINK_TEXT, "Данные аккаунта").click()
+#     WebDriverWait(driver, 10).until(EC.title_contains("Мой аккаунт — Skillbox"))
+#
+#     expected_header = "ДАННЫЕ УЧЕТНОЙ ЗАПИСИ"
+#     actual_header = driver.find_element(By.CLASS_NAME, "post-title")
+#
+#     driver.find_element(By.ID, "password_current").send_keys(current_password)
+#     driver.find_element(By.ID, "password_1").send_keys(passwords[1])
+#     driver.find_element(By.ID, "password_2").send_keys(passwords[1])
+#     driver.find_element(By.NAME, "save_account_details").click()
+#
+#     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "woocommerce-message")))
+#     logout(driver)
 
 
 # -- Ported and tested --
@@ -547,7 +542,7 @@ def get_sub_catalog_title(driver, element_text):
 #     change_slider(driver, -25, "(//span[contains(@class,'ui-slider-handle ui-state-default')])[2]")
 
 def get_price(driver, slider_xpath, price_xpath, offset):
-    slider = get_element(driver, By.XPATH, slider_xpath)
+    slider = utilities.get_element(driver, By.XPATH, slider_xpath)
     slider.click()
     action = ActionChains(driver)
     action.drag_and_drop_by_offset(slider, offset, 0).perform()
@@ -825,13 +820,13 @@ def get_product_and_his_title(driver):
     if EC.visibility_of_element_located((By.XPATH, "//ul[@class='products columns-4']//li/div[2]")):
         products_card_footer = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "//ul[@class='products columns-4']//li/div[2]")))
     else:
-        return "Element not visible", none
+        return "Element not visible", driver
 
     for x in range(3):
         print("\nx -", x)
         product_card_footer = products_card_footer[x]
         title_product = product_card_footer.find_element(By.XPATH, "//a/h3").text
-        button_to_add_cart = get_element(driver, By.XPATH, "//ul[@class='products columns-4']//li/div[2]/div/a")
+        button_to_add_cart = utilities.get_element(driver, By.XPATH, "//ul[@class='products columns-4']//li/div[2]/div/a")
 
         # print("button_to_add_cart -", button_to_add_cart.text)
         if button_to_add_cart.text.capitalize() == "В корзину":
@@ -875,7 +870,7 @@ def get_product_and_his_title(driver):
 
 def get_product_in_cart(driver):
     try:
-        title_product_added_in_cart = get_element(driver, By.XPATH, "//td[@data-title='Товар']//a[1]").text
+        title_product_added_in_cart = utilities.get_element(driver, By.XPATH, "//td[@data-title='Товар']//a[1]").text
 
         return title_product_added_in_cart
     except TimeoutException as te:
@@ -888,9 +883,9 @@ def go_to_product_from_block_under_the_filter(driver):
 
     products =  driver.find_elements(By.XPATH, "//ul[@class='product_list_widget']//li")
     product = products[random.randint(0, 4)]
-    product_title = get_element(product, By.TAG_NAME, "span").text
+    product_title = utilities.get_element(product, By.TAG_NAME, "span").text
     product.find_element(By.TAG_NAME, "a").click()
-    prod_title_in_new_page = get_element(driver, By.XPATH, "//h1[@class='product_title entry-title']").text
+    prod_title_in_new_page = utilities.get_element(driver, By.XPATH, "//h1[@class='product_title entry-title']").text
     prod_title_in_new_page = prod_title_in_new_page.replace("’", "'").replace("‘", "'")
 
 
