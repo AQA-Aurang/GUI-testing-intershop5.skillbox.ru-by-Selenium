@@ -1,16 +1,32 @@
 import pytest
 import interhsop5skillbox.utilities as utilities
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 @pytest.fixture(scope="module")
-def driver(request):
+def driver():
+    # options = webdriver.ChromeOptions()
+    # options.add_argument("--version")
+
+    # drv = webdriver.Chrome(options=options)
+    # version_info = drv.capabilities["browserVersion"]
+    # print("version_info -", version_info)
+
+    # chrome_service = Service(ChromeDriverManager(driver_version=version_info).install())
+    # wd = webdriver.Chrome(service=chrome_service)
+    # print("wd version -", wd.capabilities['chrome']['chromedriverVersion'])
+
     wd = webdriver.Chrome()
+    print("wd version -", wd.capabilities['chrome']['chromedriverVersion'])
     wd.implicitly_wait(10)
 
     yield wd
+
     wd.quit()
 
 # -------------------------------------------------
