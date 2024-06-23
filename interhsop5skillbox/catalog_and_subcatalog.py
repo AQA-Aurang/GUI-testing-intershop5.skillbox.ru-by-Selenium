@@ -1,24 +1,28 @@
-import pytest, random
-import interhsop5skillbox.utilities as utilities
+import pytest
+import random
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+
+import interhsop5skillbox.utilities as utilities
+
 
 @pytest.fixture(scope="module")
-def driver(request):
+def driver():
     wd = webdriver.Chrome()
     wd.implicitly_wait(10)
 
     yield wd
     wd.quit()
 
+
 # -------------------------------------------------
 # Страница каталога товаров
 def test_go_to_catalog_of_products(driver):
-    driver.get("http://intershop5.skillbox.ru")
+    driver.get("https://intershop5.skillbox.ru")
 
     catalog = utilities.get_element(driver, By.LINK_TEXT, "КАТАЛОГ")
     catalog_title = catalog.text
@@ -58,7 +62,8 @@ def test_select_another_variant_from_product_sorting(driver):
     selected_item_title = selected_item.text
     selected_item.click()
 
-    default_item = utilities.get_element(driver, By.NAME, "orderby").find_element(By.XPATH, "//option[@selected='selected']")
+    default_item = utilities.get_element(driver, By.NAME, "orderby").find_element(By.XPATH,
+                                                                                  "//option[@selected='selected']")
     assert selected_item_title == default_item.text, "Selected item not equal with default item"
 
 
@@ -79,7 +84,8 @@ def change_slider(driver, pixel_offset, slider_xpath):
 
     products = utilities.get_elements(driver, By.XPATH, "//ul[@class='products columns-4']/li")
     for product in products:
-        price_element = utilities.get_element(product, By.XPATH, "(//span[@class='woocommerce-Price-amount amount']//bdi)[1]")
+        price_element = utilities.get_element(product, By.XPATH,
+                                              "(//span[@class='woocommerce-Price-amount amount']//bdi)[1]")
         price_str = price_element.text[:-1].replace(",", ".")
         price = float(price_str)
         assert price >= fixed_price, "Products price is not equal"
@@ -104,6 +110,7 @@ def get_price(driver, slider_xpath, price_xpath, offset):
     fixed_price_str = utilities.get_element(driver, By.XPATH, price_xpath).text
     return driver, float(fixed_price_str[:-1])
 
+
 def test_move_both_sliders_in_price_filter(driver):
     go_to_catalog_of_product(driver)
 
@@ -127,7 +134,8 @@ def test_move_both_sliders_in_price_filter(driver):
         return
 
     for product in products:
-        price_element = utilities.get_element(product, By.XPATH, "(//span[@class='woocommerce-Price-amount amount']//bdi)[1]")
+        price_element = utilities.get_element(product, By.XPATH,
+                                              "(//span[@class='woocommerce-Price-amount amount']//bdi)[1]")
         price_text = price_element.text.replace(",", ".")
         price = float(price_text[:-1])
 
@@ -169,12 +177,14 @@ def test_go_to_product_from_block_under_the_filter(driver):
 
 # Компонент поиска
 def test_go_to_product_from_search_field(driver):
-    driver.get("http://intershop5.skillbox.ru")
+    driver.get("https://intershop5.skillbox.ru")
 
     search_product = "watch"
     utilities.get_element(driver, By.XPATH, "(//input[@name='s'])[1]").send_keys(search_product)
     utilities.get_element(driver, By.CLASS_NAME, "searchsubmit").click()
 
-    prod_title_in_search_output_page = utilities.get_element(driver, By.XPATH, "//h1[@class='entry-title ak-container']").text
+    prod_title_in_search_output_page = utilities.get_element(driver, By.XPATH,
+                                                             "//h1[@class='entry-title ak-container']").text
 
-    assert search_product.upper() in prod_title_in_search_output_page, "Search product not equals with product in search output page"
+    assert search_product.upper() in prod_title_in_search_output_page, \
+        "Search product not equals with product in search output page"

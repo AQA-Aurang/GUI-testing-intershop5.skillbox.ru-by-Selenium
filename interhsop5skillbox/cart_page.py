@@ -5,13 +5,15 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 
+
 @pytest.fixture(scope="module")
-def driver(request):
+def driver():
     wd = webdriver.Chrome()
     wd.implicitly_wait(10)
 
     yield wd
     wd.quit()
+
 
 # -------------------------------------------------
 # Страница корзины
@@ -24,6 +26,7 @@ def get_product_in_cart(driver):
     except TimeoutException:
         driver.refresh()
         get_product_in_cart(driver)
+
 
 def add_item_to_cart_from_related_products_on_product_page(driver):
     utilities.go_to_product(driver)
@@ -48,7 +51,7 @@ def test_go_to_product_from_cart1(driver):
 
     utilities.get_element(driver, By.XPATH, "//img[@loading='lazy']").click()
     prod_title_in_new_page = utilities.get_element_lt(driver, By.XPATH,
-                                                   "//h1[@class='product_title entry-title']").text
+                                                      "//h1[@class='product_title entry-title']").text
 
     assert prod_title_in_new_page == title_product, "Titles of products not equals"
 
@@ -99,7 +102,8 @@ def test_recovery_product_after_removing(driver):
     removed_product = remove_product_added_in_cart(driver)
 
     driver.find_element(By.LINK_TEXT, "Вернуть?").click()
-    recovery_product = utilities.get_element(driver, By.XPATH, f"//td[@data-title='Товар']/a[contains(text(), '{removed_product}')]").text
+    recovery_product = utilities.get_element(driver, By.XPATH,
+                                             f"//td[@data-title='Товар']/a[contains(text(), '{removed_product}')]").text
 
     assert recovery_product == removed_product, "Deleted product does not match the recovered product"
 
@@ -113,6 +117,7 @@ def apply_coupon_on_cart_page(driver, coupon, xpath_prompt):
     alert_element = utilities.get_element_lt(driver, By.XPATH, xpath_prompt)
 
     return alert_element.text
+
 
 def test_apply_promo_code_on_cart_page(driver):
     _ = add_item_to_cart_from_related_products_on_product_page(driver)

@@ -1,39 +1,26 @@
 import pytest
 import interhsop5skillbox.utilities as utilities
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+
 @pytest.fixture(scope="module")
 def driver():
-    # options = webdriver.ChromeOptions()
-    # options.add_argument("--version")
-
-    # drv = webdriver.Chrome(options=options)
-    # version_info = drv.capabilities["browserVersion"]
-    # print("version_info -", version_info)
-
-    # chrome_service = Service(ChromeDriverManager(driver_version=version_info).install())
-    # wd = webdriver.Chrome(service=chrome_service)
-    # print("wd version -", wd.capabilities['chrome']['chromedriverVersion'])
-
     wd = webdriver.Chrome()
-    print("wd version -", wd.capabilities['chrome']['chromedriverVersion'])
     wd.implicitly_wait(10)
 
     yield wd
 
     wd.quit()
 
+
 # -------------------------------------------------
 
 # Инофрмация на стр. Мой аккаунт
 def test_go_to_my_account_from_link_navbar(driver):
-    driver.get("http://intershop5.skillbox.ru")
+    driver.get("https://intershop5.skillbox.ru")
     utilities.get_element(driver, By.LINK_TEXT, "Мой аккаунт").click()
     WebDriverWait(driver, 10).until(EC.title_contains("Мой аккаунт — Skillbox"))
 
@@ -42,7 +29,7 @@ def test_go_to_my_account_from_link_navbar(driver):
 
 
 def test_go_to_my_account_from_login_link(driver):
-    driver.get("http://intershop5.skillbox.ru")
+    driver.get("https://intershop5.skillbox.ru")
     utilities.get_element(driver, By.LINK_TEXT, "Мой аккаунт").click()
     WebDriverWait(driver, 10).until(EC.title_contains("Мой аккаунт — Skillbox"))
 
@@ -118,6 +105,7 @@ def navigation_to_personal_details(driver):
 
     return driver
 
+
 def modify_one_of_the_field_in_account(driver, field_id, new_value):
     driver = navigation_to_personal_details(driver)
 
@@ -148,21 +136,24 @@ def test_modify_second_name_in_account(driver):
     new_second_name = "Hushang-Mirzo"
     updated_second_name = modify_one_of_the_field_in_account(driver, "account_last_name", new_second_name)
 
-    assert updated_second_name == new_second_name, f"Expected updated second name: {new_second_name}, Actual updated second name: {updated_second_name}"
+    assert updated_second_name == new_second_name, \
+        f"Expected updated second name: {new_second_name}, Actual updated second name: {updated_second_name}"
 
 
 def test_modify_showing_name_in_account(driver):
     new_display_name = "Faridun is a Caesar Emperor of Rome"
     updated_display_name = modify_one_of_the_field_in_account(driver, "account_display_name", new_display_name)
 
-    assert updated_display_name == new_display_name, f"Expected updated second name: {new_display_name}, Actual updated second name: {updated_display_name}"
+    assert updated_display_name == new_display_name, \
+        f"Expected updated second name: {new_display_name}, Actual updated second name: {updated_display_name}"
 
 
 def test_modify_email_in_account(driver):
     new_email = "ValayBalay@mail.ru"
     updated_email = modify_one_of_the_field_in_account(driver, "account_email", new_email)
 
-    assert updated_email == new_email, f"Expected updated second name: {new_email}, Actual updated second name: {updated_email}"
+    assert updated_email == new_email, \
+        f"Expected updated second name: {new_email}, Actual updated second name: {updated_email}"
 
 
 def change_password_fields(driver, current_pass, new_pass, repeat_new_pass):
@@ -172,6 +163,7 @@ def change_password_fields(driver, current_pass, new_pass, repeat_new_pass):
     utilities.get_element(driver, By.NAME, "save_account_details").click()
 
     return driver
+
 
 # revert old password
 def revert_password(driver, current_password):
@@ -202,7 +194,8 @@ def test_modify_password_in_account(driver):
     li_element = utilities.get_element(driver, By.XPATH, "//ul[@role='alert']//li[1]")
     # driver.find_element(By.XPATH, "//ul[@role='alert']//li[1]")
 
-    assert li_element.text == "Веденный пароль для пользователя Ferdinand неверный. Забыли пароль?", "Password update failed"
+    assert li_element.text == "Веденный пароль для пользователя Ferdinand неверный. Забыли пароль?", \
+        "Password update failed"
     revert_password(driver, new_password)
 
 

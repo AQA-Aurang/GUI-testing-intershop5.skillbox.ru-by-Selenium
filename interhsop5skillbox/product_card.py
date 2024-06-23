@@ -1,4 +1,6 @@
-import pytest, re, random
+import pytest
+import re
+import random
 import interhsop5skillbox.utilities as utilities
 from selenium.webdriver.common.by import By
 from selenium import webdriver
@@ -6,8 +8,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 
+
 @pytest.fixture(scope="module")
-def driver(request):
+def driver():
     wd = webdriver.Chrome()
     wd.implicitly_wait(20)
 
@@ -19,6 +22,7 @@ def driver(request):
 
     yield wd
     wd.quit()
+
 
 # -------------------------------------------------
 # Карточка товара 1
@@ -107,7 +111,7 @@ def test_zoom_product_with_magnifying_glass_on_product_card(driver):
 
 
 def test_leave_review_for_product(driver):
-    driver.get("http://intershop5.skillbox.ru")
+    driver.get("https://intershop5.skillbox.ru")
     driver = utilities.login(driver)
 
     driver.find_element(By.LINK_TEXT, "Заказы").click()
@@ -116,7 +120,8 @@ def test_leave_review_for_product(driver):
     # driver.find_element(By.LINK_TEXT, "Next").click()
 
     utilities.get_element(driver, By.XPATH, "(//td[@data-title='Заказ']//a)[1]").click()
-    ordered_product = utilities.get_element(driver, By.XPATH, "//td[@class='woocommerce-table__product-name product-name']")
+    ordered_product = utilities.get_element(driver, By.XPATH,
+                                            "//td[@class='woocommerce-table__product-name product-name']")
 
     try:
         ordered_product.find_element(By.TAG_NAME, "a").click()
@@ -157,7 +162,7 @@ def test_go_to_catelog_subcatelog_in_sideblock_on_product_page(driver):
     go_to_product(driver)
 
     categories = utilities.get_elements(driver, By.XPATH, "//li[contains(@class,'cat-item')]//a")
-    category_link = categories[random.randint(0, len(categories)-1)]
+    category_link = categories[random.randint(0, len(categories) - 1)]
     title_category = category_link.text
     category_link.click()
 
@@ -169,9 +174,10 @@ def test_go_to_catelog_subcatelog_in_sideblock_on_product_page(driver):
 def test_go_to_product_from_related_products_on_product_page(driver):
     go_to_product(driver)
 
-    product_from_related_products = utilities.get_element(driver, By.XPATH, f"(//a[@class='collection_title']//h3)[{random.randint(1, 3)}]")
-    title_product = product_from_related_products.text
-    product_from_related_products.click()
+    related_product_in_products = utilities.get_element(driver, By.XPATH,
+                                                        f"(//a[@class='collection_title']//h3)[{random.randint(1, 3)}]")
+    title_product = related_product_in_products.text
+    related_product_in_products.click()
 
     title_page = utilities.get_element(driver, By.XPATH, "//h1[@class='product_title entry-title']").text
     assert title_page == title_product, "Titles of products is not equals"
@@ -186,7 +192,8 @@ def get_product_and_his_title(driver):
     for x in range(len(products_card_footers)):
         product_card_footer = products_card_footers[x]
         title_product = product_card_footer.find_element(By.XPATH, "//a/h3").text
-        button_to_add_cart = utilities.get_element(driver, By.XPATH, "//ul[@class='products columns-4']//li/div[2]/div/a")
+        button_to_add_cart = utilities.get_element(driver, By.XPATH,
+                                                   "//ul[@class='products columns-4']//li/div[2]/div/a")
         # print("\nx -", x, "button title -", button_to_add_cart.text.capitalize())
 
         if button_to_add_cart.text.capitalize() == "В корзину":
@@ -214,10 +221,12 @@ def test_add_item_to_cart_from_related_products_on_product_page(driver):
     # with open("C:/Users/Farid/Desktop/screenshot4.png", "wb") as f:
     #     f.write(screenshot)
 
-    utilities.get_element(driver, By.XPATH, f"//ul[@class='products columns-4']//li/div[2]/div/a[{item_numb+1}]").click()
+    utilities.get_element(driver, By.XPATH,
+                          f"//ul[@class='products columns-4']//li/div[2]/div/a[{item_numb + 1}]").click()
     utilities.get_element(driver, By.XPATH, "//a[@title='Подробнее']").click()
 
-    title_of_added_in_cart_product = utilities.get_element(driver, By.XPATH, f"//td[@data-title='Товар']/a[contains(text(), '{title_product}')]").text
+    title_of_added_in_cart_product = utilities.get_element(driver, By.XPATH,
+                                                           f"//td[@data-title='Товар']/a[contains(text(), '{title_product}')]").text
 
     assert title_of_added_in_cart_product == title_product, "Titles of products not equals"
 
@@ -233,7 +242,8 @@ def test_go_to_product_from_products_sidebar_on_product_page(driver):
         title_product = product.text
         product.click()
 
-        title_product_in_new_page = utilities.get_element(driver, By.XPATH, "//h1[@class='product_title entry-title']").text
+        title_product_in_new_page = utilities.get_element(driver, By.XPATH,
+                                                          "//h1[@class='product_title entry-title']").text
         if "‘" in title_product_in_new_page and "’" in title_product_in_new_page:
             title_product_in_new_page = title_product_in_new_page.replace("‘", "'").replace("’", "'")
 

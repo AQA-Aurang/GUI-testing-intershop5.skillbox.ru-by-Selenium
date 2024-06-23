@@ -1,4 +1,5 @@
-import pytest, time
+import pytest
+import time
 import interhsop5skillbox.utilities as utilities
 import interhsop5skillbox.product_card as p_card
 from selenium import webdriver
@@ -6,8 +7,6 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 
-
-# from selenium.common.exceptions import ElementClickInterceptedException
 
 @pytest.fixture(scope="module")
 def driver():
@@ -108,24 +107,6 @@ def test_apply_coupon_on_checkout_page(driver):
 
     utilities.logout_experiment(driver)
 
-    # try:
-    #     coupons = utilities.get_elements_experimental(driver, By.XPATH, "//th[contains(text(), 'Скидка')]")
-    #
-    #     for coupon in coupons:
-    #         if "GIVEMEHALYAVA" in coupon.text:
-    #             row = utilities.get_element(coupon, By.XPATH, "./..")
-    #             row.find_element(By.CSS_SELECTOR, "td a").submit()
-    #             break
-    #
-    # except TimeoutException:
-    #     utilities.get_element(driver, By.LINK_TEXT, "Нажмите для ввода купона").click()
-    #     alert_of_apply_coupon = apply_coupon_on_checkout_page(driver, "GIVEMEHALYAVA")  # SERT500
-    #
-        # if len(alert_of_apply_coupon) > 0:
-        #     print("\n" + alert_of_apply_coupon)
-        #
-        #     utilities.get_element(driver, By.XPATH, "(//div[@class='blockUI blockOverlay'])[1]")
-        #     assert alert_of_apply_coupon == "Купон успешно добавлен.", "Coupon was not applied"
 
 def prepare_checkout_page(driver):
     driver.get("https://intershop5.skillbox.ru")
@@ -176,6 +157,7 @@ def test_remove_added_coupon(driver):
     assert alert_element.text == "Купон удален.", "Coupon could not be deleted"
 
     utilities.logout_experiment(driver)
+
 
 def add_product_to_cart_and_go_to_order_page(driver):
     driver.get("https://intershop5.skillbox.ru")
@@ -234,7 +216,6 @@ def test_place_order_with_some_empty_mandatory_fields(driver):
         "We can order the product with empty name filed - its ERROR!"
     overfilling_of_fields(driver)
     utilities.logout_experiment(driver)
-
 
 # def test_place_order_via_direct_bank_transfer(driver):
 #     driver = add_product_to_cart_and_go_to_order_page(driver)
