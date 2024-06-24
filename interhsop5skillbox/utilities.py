@@ -66,15 +66,10 @@ def login_with_data(driver, username, password):
 
 
 def logout(driver):
-    get_element(driver, By.NAME, "Выйти").click()
-
-
-def logout_experiment(driver):
     driver.execute_script("window.scrollTo(0, 0);")
 
-    time.sleep(5)
+    time.sleep(2)
     logout_link = get_element(driver, By.LINK_TEXT, "Выйти")
-    # print("logout_link displayed -", logout_link.is_displayed())
     WebDriverWait(driver, 10).until(EC.element_to_be_clickable(logout_link))
     logout_link.click()
 
