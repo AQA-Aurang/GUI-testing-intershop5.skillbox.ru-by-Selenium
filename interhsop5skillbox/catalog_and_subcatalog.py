@@ -1,6 +1,5 @@
-import pytest
 import random
-from selenium import webdriver
+from conftest import chrome_browser as driver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -8,15 +7,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 import interhsop5skillbox.utilities as utilities
-
-
-@pytest.fixture(scope="module")
-def driver():
-    wd = webdriver.Chrome()
-    wd.implicitly_wait(10)
-
-    yield wd
-    wd.quit()
 
 
 # -------------------------------------------------

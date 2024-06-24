@@ -1,15 +1,6 @@
-import pytest
 import interhsop5skillbox.utilities as utilities
-from selenium import webdriver
+from conftest import chrome_browser as driver
 from selenium.webdriver.common.by import By
-
-@pytest.fixture(scope="module")
-def driver(request):
-    wd = webdriver.Chrome()
-    wd.implicitly_wait(10)
-
-    yield wd
-    wd.quit()
 
 # -------------------------------------------------
 # Блок с подкаталогами на гл. стр.

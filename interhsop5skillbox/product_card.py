@@ -1,27 +1,11 @@
-import pytest
 import re
 import random
 import interhsop5skillbox.utilities as utilities
 from selenium.webdriver.common.by import By
-from selenium import webdriver
+from conftest import chrome_browser as driver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
-
-
-@pytest.fixture(scope="module")
-def driver():
-    wd = webdriver.Chrome()
-    wd.implicitly_wait(20)
-
-    # Increase page load timeout to 40 seconds
-    wd.set_page_load_timeout(40)
-
-    # Increase JavaScript execution timeout to 20 seconds
-    wd.set_script_timeout(20)
-
-    yield wd
-    wd.quit()
 
 
 # -------------------------------------------------

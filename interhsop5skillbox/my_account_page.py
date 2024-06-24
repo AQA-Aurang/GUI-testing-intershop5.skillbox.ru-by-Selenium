@@ -1,19 +1,8 @@
-import pytest
 import interhsop5skillbox.utilities as utilities
-from selenium import webdriver
+from conftest import chrome_browser as driver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
-
-@pytest.fixture(scope="module")
-def driver():
-    wd = webdriver.Chrome()
-    wd.implicitly_wait(10)
-
-    yield wd
-
-    wd.quit()
 
 
 # -------------------------------------------------

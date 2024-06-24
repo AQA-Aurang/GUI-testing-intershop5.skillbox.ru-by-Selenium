@@ -1,18 +1,9 @@
 import pytest
 import interhsop5skillbox.utilities as utilities
 import interhsop5skillbox.product_card as p_card
-from selenium import webdriver
+from conftest import chrome_browser as driver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
-
-
-@pytest.fixture(scope="module")
-def driver():
-    wd = webdriver.Chrome()
-    wd.implicitly_wait(10)
-
-    yield wd
-    wd.quit()
 
 
 # -------------------------------------------------
