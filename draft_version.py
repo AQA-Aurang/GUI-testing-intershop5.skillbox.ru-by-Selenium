@@ -11,19 +11,13 @@ from selenium.common.exceptions import TimeoutException
 usernames = ["Faridun", "Ferdinand"]
 passwords = ["ValayBalay", "ValaVala123'"]
 
-@pytest.fixture(scope="module")
-def driver(request):
-    # options = ChromiumOptions()
-    # options.add_argument("start-fullscreen")
-    # wd = webdriver.Chrome(options=options)
-    wd = webdriver.Chrome()
-    wd.implicitly_wait(10)
-
-    # print("capabilities -", wd.capabilities)
-    # return wd
-
-    yield wd
-    wd.quit()
+# @pytest.fixture(scope="module")
+# def driver():
+#     wd = webdriver.Chrome()
+#     wd.implicitly_wait(10)
+#
+#     yield wd
+#     wd.quit()
 
 
 # def test_example(driver):
@@ -179,24 +173,24 @@ def navigation_to_personal_details(driver):
 
     return driver
 
-def modify_one_field_in_account(driver, field_id, new_value):
-    driver = navigation_to_personal_details(driver)
-
-    # modifing second name
-    field = driver.find_element(By.ID, field_id)
-    field.clear()
-    field.send_keys(new_value)
-
-    # save modification
-    driver.find_element(By.NAME, "save_account_details").click()
-
-    # getting second name and check
-    driver.find_element(By.LINK_TEXT, "Данные аккаунта").click()
-    updated_field = driver.find_element(By.ID, field_id)
-    updated_field = updated_field.get_attribute("value")
-    utilities.logout(driver)
-
-    return updated_field
+# def modify_one_field_in_account(driver, field_id, new_value):
+#     driver = navigation_to_personal_details(driver)
+#
+#     # modifing second name
+#     field = driver.find_element(By.ID, field_id)
+#     field.clear()
+#     field.send_keys(new_value)
+#
+#     # save modification
+#     driver.find_element(By.NAME, "save_account_details").click()
+#
+#     # getting second name and check
+#     driver.find_element(By.LINK_TEXT, "Данные аккаунта").click()
+#     updated_field = driver.find_element(By.ID, field_id)
+#     updated_field = updated_field.get_attribute("value")
+#     utilities.logout(driver)
+#
+#     return updated_field
 
 
 # -- Ported and tested --
