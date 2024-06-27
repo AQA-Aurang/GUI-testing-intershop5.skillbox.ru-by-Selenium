@@ -13,8 +13,3 @@
     - Страница корзины
     - Страница оформления заказа
     - Тест-сценарии по сайту: https://docs.google.com/spreadsheets/d/1EUPTwZ5XQ_27GWN0Q1To6dNEeRes0YbzEp7Se4LW1_4/edit?usp=sharing
-
-
-Dependencies used:
-- pytest - 8.2.2
-- selenium - 4.21.0
