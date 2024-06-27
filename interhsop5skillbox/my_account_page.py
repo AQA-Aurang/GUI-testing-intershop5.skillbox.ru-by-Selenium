@@ -19,7 +19,7 @@ def test_go_to_my_account_from_link_navbar(driver):
 
 def test_go_to_my_account_from_login_link(driver):
     driver.get("https://intershop5.skillbox.ru")
-    utilities.get_element(driver, By.LINK_TEXT, "Мой аккаунт").click()
+    utilities.get_element(driver, By.LINK_TEXT, "Войти").click()
     WebDriverWait(driver, 10).until(EC.title_contains("Мой аккаунт — Skillbox"))
 
     header_in_logging_page = utilities.get_element(driver, By.CLASS_NAME, "post-title")
