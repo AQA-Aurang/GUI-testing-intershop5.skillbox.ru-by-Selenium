@@ -35,17 +35,18 @@ def chrome_browser_long_timeout():
 
 
 def get_username_password(config):
-    for username, password in config["users"].items():
-        if username == "ferdinand":
-            return username.capitalize(), password
+    for user, passwrd in config["users"].items():
+        if user == "ferdinand":
+            return user.capitalize(), passwrd
 
 
-@pytest.fixture(scope="module")
+config = configparser.ConfigParser()
+config.read('./../config.ini')
+username, password = get_username_password(config)
+
+
+@pytest.fixture(scope="function")
 def login(driver):
-    config = configparser.ConfigParser()
-    config.read('./../config.ini')
-    username, password = get_username_password(config)
-
     WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.LINK_TEXT, "Войти"))).click()
     WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "username"))).send_keys(username)
     WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "password"))).send_keys(password)
@@ -55,8 +56,9 @@ def login(driver):
     return driver
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def logout(driver):
+    yield
     driver.execute_script("window.scrollTo(0, 0);")
 
     time.sleep(2)

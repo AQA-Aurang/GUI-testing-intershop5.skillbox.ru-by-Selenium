@@ -1,15 +1,31 @@
+import time
+
 from selenium.webdriver.common.by import By
 
 from .base_page import BasePage
 from .base_page import get_element_in_another_element, get_elements_in_another_element
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 
 class MyAccountPage(BasePage):
 
     def __init__(self, driver):
         super().__init__(driver)
+
+    def login_with_data(self, username, password):
+        element = self.get_element(By.LINK_TEXT, "Войти")
+        self.click_element(element)
+
+        self.get_element(By.ID, "username").send_keys(username)
+        self.get_element(By.ID, "password").send_keys(password)
+        element = self.get_element(By.NAME, "login")
+        self.click_element(element)
+
+        WebDriverWait(self.driver, 10).until(EC.title_contains("Мой аккаунт"))
+
+        return self.driver
 
     def wait_account_title(self, title_page):
         WebDriverWait(self.driver, 10).until(EC.title_contains(title_page))
@@ -84,3 +100,23 @@ class MyAccountPage(BasePage):
         self.wait_account_title("Мой аккаунт — Skillbox")
         self.change_password_fields(current_password, self.default_password, self.default_password)
         self.get_element(By.CLASS_NAME, "woocommerce-message")
+
+    def logout_and_login(self):
+        # logout the account
+        self.driver.execute_script("window.scrollTo(0, 0);")
+
+        time.sleep(2)
+        logout_link = self.get_element(By.LINK_TEXT, "Выйти")
+        self.click_element(logout_link)
+
+        # login the account
+        element = self.get_element(By.LINK_TEXT, "Войти")
+        self.click_element(element)
+        self.get_element(By.ID, "username").send_keys(self.default_username)
+        self.get_element(By.ID, "password").send_keys(self.default_password)
+        element = self.get_element(By.NAME, "login")
+        self.click_element(element)
+
+        WebDriverWait(self.driver, 10).until(EC.title_contains("Мой аккаунт"))
+
+        return self.driver

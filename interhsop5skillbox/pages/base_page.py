@@ -65,52 +65,9 @@ class BasePage:
     def get_elements_lt(self, type_of_locator, locator):
         return WebDriverWait(self.driver, 30).until(EC.presence_of_all_elements_located((type_of_locator, locator)))
 
-    # def go_to_top(self):
-    #     return self.driver.execute_script("window.scrollTo(0, 0);")
-
     def find_and_click_on_element(self, type_of_locator, locator):
         element = self.get_element(type_of_locator, locator)
         self.click_element(element)
 
     def go_to_bottom(self):
         return self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-
-    def login(self):
-        element = self.get_element(By.LINK_TEXT, "Войти")
-        self.click_element(element)
-
-        self.get_element(By.ID, "username").send_keys(self.default_username)
-        self.get_element(By.ID, "password").send_keys(self.default_password)
-        element = self.get_element(By.NAME, "login")
-        self.click_element(element)
-
-        WebDriverWait(self.driver, 10).until(EC.title_contains("Мой аккаунт"))
-
-        return self.driver
-
-    def login_with_data(self, username, password):
-        element = self.get_element(By.LINK_TEXT, "Войти")
-        self.click_element(element)
-
-        self.get_element(By.ID, "username").send_keys(username)
-        self.get_element(By.ID, "password").send_keys(password)
-        element = self.get_element(By.NAME, "login")
-        self.click_element(element)
-
-        WebDriverWait(self.driver, 10).until(EC.title_contains("Мой аккаунт"))
-
-        return self.driver
-
-    def logout(self):
-        self.driver.execute_script("window.scrollTo(0, 0);")
-
-        time.sleep(2)
-        try:
-            logout_link = self.get_element(By.LINK_TEXT, "Выйти")
-            # print("logout_link -", logout_link.text)
-            self.click_element(logout_link)
-        except TimeoutException:
-            login_link = self.get_element(By.LINK_TEXT, "Войти")
-
-            if login_link:
-                return login_link
