@@ -71,3 +71,7 @@ class BasePage:
 
     def go_to_bottom(self):
         return self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    def element_should_have_text(self, type_of_locator, locator, text, err_description):
+        page_header = self.get_element(type_of_locator, locator)
+        assert page_header.text == text, err_description
