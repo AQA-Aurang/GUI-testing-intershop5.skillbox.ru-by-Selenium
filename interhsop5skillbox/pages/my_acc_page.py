@@ -36,10 +36,6 @@ class MyAccountPage(BasePage):
 
         return self.driver
 
-    def header_should_have_text(self, type_of_locator, locator, text, err_description):
-        page_header = self.get_element(type_of_locator, locator)
-        assert page_header.text == text, err_description
-
     def text_match_with_header(self, type_of_locator, locator, text, err_description):
         page_header = self.get_element(type_of_locator, locator)
         assert text in page_header.text, err_description
