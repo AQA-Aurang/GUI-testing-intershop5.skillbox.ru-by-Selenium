@@ -62,13 +62,6 @@ class MyAccountPage(BasePage):
 
         return self.driver
 
-    def print_in_field(self, type_of_locator, locator, new_value):
-        field = self.get_element(type_of_locator, locator)
-        field.clear()
-        field.send_keys(new_value)
-
-        return self.driver
-
     def modify_one_of_the_field_and_check(self, locator, new_value):
         self.driver = self.navigation_to_personal_details()
         self.driver = self.print_in_field(By.ID, locator, new_value)

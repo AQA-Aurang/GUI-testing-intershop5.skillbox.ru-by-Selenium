@@ -25,7 +25,3 @@ class MainPage(BasePage):
         element_on_page = another_expected_result if another_expected_result != "" else subcatalog_title
         self.element_should_have_text(By.XPATH, f"//h1[text()='{element_on_page}']", sub_catalog_title,
                                      f"Cannot redirect to '{element_on_page}' sub catalog from main page")
-
-    def move_down_in_altitude_by(self, point):
-        height = self.driver.execute_script("return window.innerHeight;")
-        self.driver.execute_script(f"window.scrollTo(0, {height * point});")

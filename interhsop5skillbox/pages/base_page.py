@@ -46,6 +46,10 @@ class BasePage:
     def get_element_lt(self, type_of_locator, locator):
         return WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((type_of_locator, locator)))
 
+    def get_element_and_text(self, type_of_locator, locator):
+        element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((type_of_locator, locator)))
+        return element, element.text
+
     def click_element(self, element):
         WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(element))
         element.click()
@@ -74,4 +78,16 @@ class BasePage:
 
     def element_should_have_text(self, type_of_locator, locator, text, err_description):
         page_header = self.get_element(type_of_locator, locator)
+        print(f"page_header - {page_header.text}, text - {text}")
         assert page_header.text == text, err_description
+
+    def move_down_in_altitude_by(self, point):
+        height = self.driver.execute_script("return window.innerHeight;")
+        self.driver.execute_script(f"window.scrollTo(0, {height * point});")
+
+    def print_in_field(self, type_of_locator, locator, new_value):
+        field = self.get_element(type_of_locator, locator)
+        field.clear()
+        field.send_keys(new_value)
+
+        return self.driver
