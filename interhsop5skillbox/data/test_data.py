@@ -79,3 +79,5 @@ assertion_not_equals_page_numbers = "Pagination page not equals"
 assertion_error_in_test_go_to_product_from_block_under_the_filter = "Titles of products is not equals"
 
 assertion_error_in_test_go_to_product_from_search_field = "Search product not equals with product in search output page"
+
+search_product = "watch"

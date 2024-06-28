@@ -124,8 +124,7 @@ def test_go_to_product_from_block_under_the_filter(preparation_work):
 def test_go_to_product_from_search_field(preparation_work):
     catalog_and_subcatalog_page = preparation_work
 
-    search_product = "watch"
-    catalog_and_subcatalog_page.print_in_field(By.XPATH, locator.search_field, search_product)
+    catalog_and_subcatalog_page.print_in_field(By.XPATH, locator.search_field, test_data.search_product)
     catalog_and_subcatalog_page.find_and_click_on_element(By.CLASS_NAME, locator.search_button)
 
     product_links = catalog_and_subcatalog_page.get_elements(By.XPATH, locator.product_links)
@@ -134,6 +133,6 @@ def test_go_to_product_from_search_field(preparation_work):
 
         catalog_and_subcatalog_page.expected_text_consist_in_searching_element(By.XPATH,
                                                      locator.product_title_in_new_page,
-                                                     search_product.capitalize(),
+                                                     test_data.search_product.capitalize(),
                                                      test_data.assertion_error_in_test_go_to_product_from_search_field)
         catalog_and_subcatalog_page.driver.back()
