@@ -57,3 +57,25 @@ assertion_error_in_finding_product_in_product_page = "Cannot go to product card"
 viewed_products = "Просмотренные товары"
 
 assertion_error_in_test_go_to_product_card_from_viewed_products = "Cannot redirect to viewed product"
+
+assertion_error_test_go_to_catalog_of_products = "Cannot redirect in catalog of products"
+
+household_appliances = "БЫТОВАЯ ТЕХНИКА"
+
+assertion_error_test_go_to_sub_catalog_from_navbar = "Cannot go to sub catalog"
+
+assertion_error_test_select_another_variant_from_product_sorting = "Selected item not equal with default item"
+
+assertion_error_in_change_slider = "Products price is not equal"
+
+assertion_error_in_test_move_both_sliders_in_price_filter1 = "Products price is not between selected prices"
+
+assertion_error_in_test_move_both_sliders_in_price_filter2 = "While trying to get the products we got a timeout exception"
+
+notification_absent_txt_for_assertion = "По вашему запросу товары не найдены."
+
+assertion_not_equals_page_numbers = "Pagination page not equals"
+
+assertion_error_in_test_go_to_product_from_block_under_the_filter = "Titles of products is not equals"
+
+assertion_error_in_test_go_to_product_from_search_field = "Search product not equals with product in search output page"
