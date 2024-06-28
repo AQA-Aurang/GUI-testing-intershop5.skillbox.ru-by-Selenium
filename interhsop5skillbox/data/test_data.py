@@ -43,3 +43,17 @@ assertion_error_in_test_mismatched_new_pass_with_repeat_new_pass_fields = "Canno
 isLogin = "Войти"
 
 assertion_error_test_logout_by_link_in_account = "Cannot log out"
+
+first_sub_catalog_title = "Книги"
+
+second_sub_catalog_title = "Планшеты"
+
+another_sub_catalog_title = "Фото/видео"
+
+sub_catalog_in_product_page = "ВСЕ ТОВАРЫ"
+
+assertion_error_in_finding_product_in_product_page = "Cannot go to product card"
+
+viewed_products = "Просмотренные товары"
+
+assertion_error_in_test_go_to_product_card_from_viewed_products = "Cannot redirect to viewed product"
