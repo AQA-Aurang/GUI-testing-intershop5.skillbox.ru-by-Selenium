@@ -34,8 +34,8 @@ def chrome_browser_long_timeout():
     wd.quit()
 
 
-def get_username_password(config):
-    for user, passwrd in config["users"].items():
+def get_username_password(conf):
+    for user, passwrd in conf["users"].items():
         if user == "ferdinand":
             return user.capitalize(), passwrd
 
