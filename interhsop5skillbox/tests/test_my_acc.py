@@ -110,7 +110,7 @@ def test_modify_password_fields(preparation_work, login, logout):
     # we have to check, need logout and try login with old password
     acc_page.driver = acc_page.logout_and_login()
 
-    acc_page.element_should_have_text(By.XPATH, locator.alert_about_non_success_change_password,
+    acc_page.element_should_have_text(By.XPATH, locator.not_success_alert,
                                      test_data.failure_text_in_change_password_for_assertion,
                                      test_data.assertion_error_in_test_modify_password_fields)
     acc_page.revert_password(test_data.new_password)
@@ -123,7 +123,7 @@ def test_modify_password_without_current_pass(preparation_work, login, logout):
     acc_page.driver = login
     acc_page.driver = acc_page.navigation_to_personal_details()
     acc_page.driver = acc_page.change_password_fields("", test_data.new_password, test_data.new_password)
-    acc_page.element_should_have_text(By.XPATH, locator.alert_about_non_success_change_password, test_data.alert_text_for_assertion,
+    acc_page.element_should_have_text(By.XPATH, locator.not_success_alert, test_data.alert_text_for_assertion,
                                      test_data.assertion_error_in_test_modify_password_without_current_pass)
     logout
 
@@ -133,7 +133,7 @@ def test_mismatched_new_pass_with_repeat_new_pass_fields(preparation_work, login
     acc_page.driver = login
     acc_page.driver = acc_page.navigation_to_personal_details()
     acc_page.driver = acc_page.change_password_fields(acc_page.default_password, test_data.new_password, test_data.repeat_new_password)
-    acc_page.element_should_have_text(By.XPATH, locator.alert_about_non_success_change_password,
+    acc_page.element_should_have_text(By.XPATH, locator.not_success_alert,
                                      test_data.password_not_match_for_assertion,
                                      test_data.assertion_error_in_test_mismatched_new_pass_with_repeat_new_pass_fields)
     logout
