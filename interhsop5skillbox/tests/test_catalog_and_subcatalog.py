@@ -1,9 +1,7 @@
 import random
-import time
 
 import interhsop5skillbox.data.test_data as test_data
 import interhsop5skillbox.data.locators as locator
-# from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from conftest import chrome_browser as driver
 from conftest2 import get_webdriver_instance_and_open_catalog_and_subcatalog_page as preparation_work
@@ -117,7 +115,7 @@ def test_go_to_product_from_block_under_the_filter(preparation_work):
     prod_title_in_new_page = catalog_and_subcatalog_page.get_element(By.XPATH, locator.product_title_in_new_page).text
     prod_title_in_new_page = prod_title_in_new_page.replace("’", "'").replace("‘", "'")
     assert prod_title_in_new_page == product_title, \
-        test_data.assertion_error_in_test_go_to_product_from_block_under_the_filter
+        test_data.assertion_error_not_equals_text_with_title_page
 
 
 # Компонент поиска
