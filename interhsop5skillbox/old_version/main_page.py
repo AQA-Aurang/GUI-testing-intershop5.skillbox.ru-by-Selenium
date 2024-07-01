@@ -1,5 +1,4 @@
-import interhsop5skillbox.utilities as utilities
-from conftest import chrome_browser as driver
+import interhsop5skillbox.old_version.utilities as utilities
 from selenium.webdriver.common.by import By
 
 # -------------------------------------------------

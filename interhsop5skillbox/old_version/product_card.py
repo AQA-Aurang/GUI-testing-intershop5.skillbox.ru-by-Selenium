@@ -1,8 +1,7 @@
 import re
 import random
-import interhsop5skillbox.utilities as utilities
+import interhsop5skillbox.old_version.utilities as utilities
 from selenium.webdriver.common.by import By
-from conftest import chrome_browser as driver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException

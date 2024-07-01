@@ -1,12 +1,11 @@
 import random
-from conftest import chrome_browser as driver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-import interhsop5skillbox.utilities as utilities
+import interhsop5skillbox.old_version.utilities as utilities
 
 
 # -------------------------------------------------

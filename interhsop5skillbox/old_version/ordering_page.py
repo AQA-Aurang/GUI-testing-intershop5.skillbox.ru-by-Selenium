@@ -1,7 +1,6 @@
 import time
-import interhsop5skillbox.utilities as utilities
-import interhsop5skillbox.product_card as p_card
-from conftest import chrome_browser_long_timeout as driver_long_timeout
+import interhsop5skillbox.old_version.utilities as utilities
+import interhsop5skillbox.old_version.product_card as p_card
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException

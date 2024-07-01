@@ -1,6 +1,5 @@
-import pytest, time, random, re
-import interhsop5skillbox.utilities as utilities
-from selenium import webdriver
+import time, random
+import interhsop5skillbox.old_version.utilities as utilities
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By

@@ -1,7 +1,5 @@
-import pytest
-import interhsop5skillbox.utilities as utilities
-import interhsop5skillbox.product_card as p_card
-from conftest import chrome_browser as driver
+import interhsop5skillbox.old_version.utilities as utilities
+import interhsop5skillbox.old_version.product_card as p_card
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 
