@@ -1,7 +1,7 @@
 import pytest
 from interhsop5skillbox.pages.base_types import PageWithChromeBrowser, PageWithChromeBrowserLongTimeout
-from conftest import chrome_browser as driver
-from conftest import chrome_browser_long_timeout as driver_lt
+from .conftest import chrome_browser as driver
+from .conftest import chrome_browser_long_timeout as driver_lt
 from interhsop5skillbox.pages.my_acc_page import MyAccountPage
 from interhsop5skillbox.pages.main_page import MainPage
 from interhsop5skillbox.pages.catalog_and_subcatalog_page import CatalogAndSubCatalogPage

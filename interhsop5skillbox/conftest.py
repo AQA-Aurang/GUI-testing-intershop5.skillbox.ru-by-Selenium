@@ -12,7 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 @pytest.fixture(scope="module")
 def chrome_browser():
     wd = webdriver.Chrome()
-    wd.implicitly_wait(10)
+    wd.implicitly_wait(20)
 
     yield wd
 
