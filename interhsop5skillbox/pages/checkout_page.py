@@ -1,9 +1,6 @@
 from .base_types import BaseType
 from .base_page import BasePage
-from .base_page import get_element_in_another_element
-from conftest import chrome_browser_long_timeout as driver_long_timeout
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 import interhsop5skillbox.data.locators as locator
 import interhsop5skillbox.data.test_data as test_data

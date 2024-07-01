@@ -7,7 +7,6 @@ from .base_page import BaseType
 from .base_page import get_element_in_another_element, get_elements_in_another_element
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
 
 
 class MyAccountPage(BasePage):
