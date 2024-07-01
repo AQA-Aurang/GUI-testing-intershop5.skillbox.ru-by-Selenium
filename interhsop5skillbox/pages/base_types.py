@@ -1,6 +1,6 @@
 from abc import ABC
-from conftest import chrome_browser as chrome
-from conftest import chrome_browser_long_timeout as chrome_lt
+from interhsop5skillbox.conftest import chrome_browser as chrome
+from interhsop5skillbox.conftest import chrome_browser_long_timeout as chrome_lt
 
 
 class BaseType(ABC):
