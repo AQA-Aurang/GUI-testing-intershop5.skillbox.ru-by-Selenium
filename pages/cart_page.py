@@ -1,10 +1,10 @@
 from .base_types import BaseType
 from .base_page import BasePage
 from selenium.webdriver.common.by import By
-from interhsop5skillbox.pages.base_page import get_element_in_another_element
+from pages.base_page import get_element_in_another_element
 from selenium.common.exceptions import TimeoutException
-import interhsop5skillbox.data.locators as locator
-import interhsop5skillbox.data.test_data as test_data
+import data.locators as locator
+import data.test_data as test_data
 
 
 class CartPage(BasePage):

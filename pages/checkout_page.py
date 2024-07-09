@@ -2,8 +2,8 @@ from .base_types import BaseType
 from .base_page import BasePage
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
-import interhsop5skillbox.data.locators as locator
-import interhsop5skillbox.data.test_data as test_data
+import data.locators as locator
+import data.test_data as test_data
 
 
 class CheckoutPage(BasePage):

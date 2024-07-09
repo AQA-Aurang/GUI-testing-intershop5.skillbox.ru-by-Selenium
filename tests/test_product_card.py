@@ -1,12 +1,12 @@
 import random
 import re
-import interhsop5skillbox.data.test_data as test_data
-import interhsop5skillbox.data.locators as locator
+import data.test_data as test_data
+import data.locators as locator
 from selenium.webdriver.common.by import By
-from interhsop5skillbox.conftest import chrome_browser as driver, login, logout
-from interhsop5skillbox.conftest2 import get_webdriver_instance_and_open_product_card_page as preparation_work
+from conftest import chrome_browser as driver, login, logout
+from conftest2 import get_webdriver_instance_and_open_product_card_page as preparation_work
 from selenium.common.exceptions import TimeoutException
-from interhsop5skillbox.pages.base_page import get_element_in_another_element
+from pages.base_page import get_element_in_another_element
 
 
 # -------------------------------------------------

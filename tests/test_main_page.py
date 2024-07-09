@@ -1,9 +1,9 @@
-import interhsop5skillbox.data.test_data as test_data
-import interhsop5skillbox.data.locators as locator
+import data.test_data as test_data
+import data.locators as locator
 from selenium.webdriver.common.by import By
-from interhsop5skillbox.conftest import chrome_browser as driver
-from interhsop5skillbox.conftest2 import get_webdriver_instance_and_open_main_page as preparation_work
-from interhsop5skillbox.pages.base_page import get_element_in_another_element
+from conftest import chrome_browser as driver
+from conftest2 import get_webdriver_instance_and_open_main_page as preparation_work
+from pages.base_page import get_element_in_another_element
 
 
 def test_go_to_sub_catalog_from_main_page(preparation_work):

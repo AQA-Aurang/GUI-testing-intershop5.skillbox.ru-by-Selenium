@@ -1,4 +1,4 @@
-import interhsop5skillbox.data.locators as locator
+import data.locators as locator
 from .base_page import BasePage
 from .base_page import BaseType
 from .base_page import get_element_in_another_element

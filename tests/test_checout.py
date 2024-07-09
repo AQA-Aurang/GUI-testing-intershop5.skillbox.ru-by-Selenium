@@ -1,9 +1,9 @@
 import time
 from selenium.webdriver.common.by import By
-from interhsop5skillbox.conftest import chrome_browser_long_timeout as driver_lt, log_in, log_out
-from interhsop5skillbox.conftest2 import get_webdriver_instance_and_open_checkout_page as preparation_work
-import interhsop5skillbox.data.test_data as test_data
-import interhsop5skillbox.data.locators as locator
+from conftest import chrome_browser_long_timeout as driver_lt, log_in, log_out
+from conftest2 import get_webdriver_instance_and_open_checkout_page as preparation_work
+import data.test_data as test_data
+import data.locators as locator
 from selenium.common.exceptions import TimeoutException
 
 

@@ -1,6 +1,6 @@
 import time
-import interhsop5skillbox.data.locators as locator
-import interhsop5skillbox.data.test_data as test_data
+import data.locators as locator
+import data.test_data as test_data
 from selenium.webdriver.common.by import By
 from .base_page import BasePage
 from .base_page import BaseType

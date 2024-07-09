@@ -1,11 +1,11 @@
 import configparser
-import interhsop5skillbox.data.locators as locator
-import interhsop5skillbox.data.test_data as test_data
+import data.locators as locator
+import data.test_data as test_data
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import TimeoutException
-from interhsop5skillbox.pages.base_types import BaseType
+from pages.base_types import BaseType
 
 
 def get_element_in_another_element(element, type_of_locator, locator):

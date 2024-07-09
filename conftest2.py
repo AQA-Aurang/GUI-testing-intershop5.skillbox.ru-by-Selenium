@@ -1,13 +1,13 @@
 import pytest
-from interhsop5skillbox.pages.base_types import PageWithChromeBrowser, PageWithChromeBrowserLongTimeout
+from pages.base_types import PageWithChromeBrowser, PageWithChromeBrowserLongTimeout
 from .conftest import chrome_browser as driver
 from .conftest import chrome_browser_long_timeout as driver_lt
-from interhsop5skillbox.pages.my_acc_page import MyAccountPage
-from interhsop5skillbox.pages.main_page import MainPage
-from interhsop5skillbox.pages.catalog_and_subcatalog_page import CatalogAndSubCatalogPage
-from interhsop5skillbox.pages.product_card_page import ProductCardPage
-from interhsop5skillbox.pages.cart_page import CartPage
-from interhsop5skillbox.pages.checkout_page import CheckoutPage
+from pages.my_acc_page import MyAccountPage
+from pages.main_page import MainPage
+from pages.catalog_and_subcatalog_page import CatalogAndSubCatalogPage
+from pages.product_card_page import ProductCardPage
+from pages.cart_page import CartPage
+from pages.checkout_page import CheckoutPage
 
 
 # Preparation work function for my_acc_page
