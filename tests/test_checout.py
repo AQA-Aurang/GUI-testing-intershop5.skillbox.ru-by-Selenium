@@ -1,6 +1,6 @@
 import time
 from selenium.webdriver.common.by import By
-from conftest import chrome_browser_long_timeout as driver_lt, log_in, log_out
+from conftest import chrome_browser as driver, login, logout
 from conftest2 import get_webdriver_instance_and_open_checkout_page as preparation_work
 import data.test_data as test_data
 import data.locators as locator
@@ -9,9 +9,9 @@ from selenium.common.exceptions import TimeoutException
 
 # -------------------------------------------------
 # Страница оформления заказа
-def test_apply_coupon(preparation_work, log_in, log_out):
+def test_apply_coupon(preparation_work, login, logout):
     checkout_page = preparation_work
-    checkout_page.driver = log_in
+    checkout_page.driver = login
 
     checkout_page.add_item_to_cart_from_related_products_on_product_card()
     checkout_page.find_and_click_on_element(By.LINK_TEXT, locator.order_link)
@@ -46,12 +46,12 @@ def test_apply_coupon(preparation_work, log_in, log_out):
 
                 assert alert_of_apply_coupon == test_data.coupon_success_applied,\
                     test_data.assertion_error_cannot_applied_coupon
-    log_out
+    logout
 
 
-def test_remove_added_coupon(preparation_work, log_in, log_out):
+def test_remove_added_coupon(preparation_work, login, logout):
     checkout_page = preparation_work
-    checkout_page.driver = log_in
+    checkout_page.driver = login
 
     checkout_page.prepare_checkout_page()
     if checkout_page.get_element(By.LINK_TEXT, locator.link_to_remove_coupon):
@@ -59,12 +59,12 @@ def test_remove_added_coupon(preparation_work, log_in, log_out):
 
     checkout_page.element_should_have_text(By.XPATH, locator.notification_about_deleted_coupon, test_data.coupon_removed,
                                            test_data.assertion_error_cannot_remove_coupon)
-    log_out
+    logout
 
 
-def test_place_order_with_empty_mandatory_field(preparation_work, log_in, log_out):
+def test_place_order_with_empty_mandatory_field(preparation_work, login, logout):
     checkout_page = preparation_work
-    checkout_page.driver = log_in
+    checkout_page.driver = login
 
     checkout_page.driver = checkout_page.add_product_to_cart_and_go_to_order_page()
     checkout_page.find_and_clear_field(By.ID, locator.name_field_in_order_page)
@@ -72,12 +72,12 @@ def test_place_order_with_empty_mandatory_field(preparation_work, log_in, log_ou
     checkout_page.element_should_have_text(By.XPATH, locator.notification_element_about_empty_field,
                                            test_data.name_field_notification_for_assertion,
                                            test_data.assertion_error_test_place_order_with_empty_mandatory_field)
-    log_out
+    logout
 
 
-def test_place_order_with_some_empty_mandatory_fields(preparation_work, log_in, log_out):
+def test_place_order_with_some_empty_mandatory_fields(preparation_work, login, logout):
     checkout_page = preparation_work
-    checkout_page.driver = log_in
+    checkout_page.driver = login
 
     checkout_page.driver = checkout_page.add_product_to_cart_and_go_to_order_page()
     checkout_page.find_and_clear_field(By.ID, locator.name_field_in_order_page)
@@ -91,7 +91,7 @@ def test_place_order_with_some_empty_mandatory_fields(preparation_work, log_in, 
            and main_errs_alerts[1].text == test_data.last_name_field_notification_for_assertion \
            and main_errs_alerts[2].text == test_data.city_field_notification_for_assertion, \
         test_data.assertion_error_test_place_order_with_some_empty_mandatory_fields
-    log_out
+    logout
 
 
 # def test_place_order_via_direct_bank_transfer(driver_long_timeout):
