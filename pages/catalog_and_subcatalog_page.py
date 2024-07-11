@@ -1,6 +1,5 @@
 import data.locators as locator
 from .base_page import BasePage
-from .base_page import BaseType
 from .base_page import get_element_in_another_element
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
@@ -8,7 +7,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 class CatalogAndSubCatalogPage(BasePage):
 
-    def __init__(self, driver: BaseType):
+    def __init__(self, driver):
         super().__init__(driver)
 
     def go_to_catalog_of_product(self):

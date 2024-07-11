@@ -1,4 +1,3 @@
-from .base_types import BaseType
 from .base_page import BasePage
 from selenium.webdriver.common.by import By
 from pages.base_page import get_element_in_another_element
@@ -8,7 +7,7 @@ import data.test_data as test_data
 
 
 class CartPage(BasePage):
-    def __init__(self, driver: BaseType):
+    def __init__(self, driver):
         super().__init__(driver)
 
     def remove_product_added_in_cart(self):

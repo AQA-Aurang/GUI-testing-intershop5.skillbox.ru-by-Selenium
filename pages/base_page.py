@@ -4,8 +4,6 @@ import data.test_data as test_data
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.common.exceptions import TimeoutException
-from pages.base_types import BaseType
 
 
 def get_element_in_another_element(element, type_of_locator, locator):
@@ -21,8 +19,8 @@ def is_visibility(type_of_locator, locator):
 
 
 class BasePage:
-    def __init__(self, chrome: BaseType):
-        self.driver = chrome.get_driver
+    def __init__(self, driver):
+        self.driver = driver
 
         config = configparser.ConfigParser()
         config.read('./../config.ini')

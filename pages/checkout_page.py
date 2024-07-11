@@ -1,4 +1,3 @@
-from .base_types import BaseType
 from .base_page import BasePage
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
@@ -7,8 +6,12 @@ import data.test_data as test_data
 
 
 class CheckoutPage(BasePage):
-    def __init__(self, driver: BaseType):
+    def __init__(self, driver):
         super().__init__(driver)
+
+    def additional_setting(self):
+        self.driver.set_page_load_timeout(40)
+        self.driver.set_script_timeout(20)
 
     def prepare_checkout_page(self):
         self.add_item_to_cart_from_related_products_on_product_card()
@@ -55,4 +58,3 @@ class CheckoutPage(BasePage):
     #         city.send_keys("Tashkent")
     #
     #     self.find_and_submit_on_button(By.ID, "place_order")
-

@@ -3,7 +3,6 @@ import data.locators as locator
 import data.test_data as test_data
 from selenium.webdriver.common.by import By
 from .base_page import BasePage
-from .base_page import BaseType
 from .base_page import get_element_in_another_element, get_elements_in_another_element
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -11,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class MyAccountPage(BasePage):
 
-    def __init__(self, driver: BaseType):
+    def __init__(self, driver):
         super().__init__(driver)
 
     def login_with_data(self, username, password):

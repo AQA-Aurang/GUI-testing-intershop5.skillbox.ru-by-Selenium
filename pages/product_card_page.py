@@ -1,10 +1,9 @@
 import random
-from .base_types import BaseType
 from .base_page import BasePage
 
 
 class ProductCardPage(BasePage):
-    def __init__(self, driver: BaseType):
+    def __init__(self, driver):
         super().__init__(driver)
 
     def element_should_have_text(self, type_of_locator, locator, text, err_description):
