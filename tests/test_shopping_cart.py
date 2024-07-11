@@ -1,7 +1,7 @@
 import data.locators as locator
 import data.test_data as test_data
 from conftest import chrome_browser as driver
-from conftest2 import get_webdriver_instance_and_open_cart_page as preparation_work
+from conftest import get_webdriver_instance_and_open_cart_page as preparation_work
 from pages.base_page import get_element_in_another_element
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException

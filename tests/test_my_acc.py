@@ -1,6 +1,6 @@
 from selenium.webdriver.common.by import By
 from conftest import chrome_browser as driver, login, logout
-from conftest2 import get_webdriver_instance_and_open_account_page as preparation_work
+from conftest import get_webdriver_instance_and_open_account_page as preparation_work
 import data.test_data as test_data
 import data.locators as locator
 

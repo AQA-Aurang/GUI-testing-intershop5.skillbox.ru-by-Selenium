@@ -2,7 +2,7 @@ import data.test_data as test_data
 import data.locators as locator
 from selenium.webdriver.common.by import By
 from conftest import chrome_browser as driver
-from conftest2 import get_webdriver_instance_and_open_main_page as preparation_work
+from conftest import get_webdriver_instance_and_open_main_page as preparation_work
 from pages.base_page import get_element_in_another_element
 
 
