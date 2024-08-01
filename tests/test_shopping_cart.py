@@ -1,100 +1,86 @@
-import data.locators as locator
-import data.test_data as test_data
+import time
+
+import pytest
+
 from conftest import chrome_browser as driver
-from conftest import get_webdriver_instance_and_open_cart_page as preparation_work
-from pages.base_page import get_element_in_another_element
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
+from conftest import get_webdriver_instance_and_open_catalog_and_sub_catalog_page as preparation_work
+from pages.shopping_cart_page import adding_anyone_product_in_cart
+from pages.product_card_page import ProductPage
+from pages.shopping_cart_page import CartPage
+from pages.shopping_cart_page import PRODUCT_IMG_LINKS_IN_CART, PRODUCT_LINKS_IN_CART
 
 
-# -------------------------------------------------
 # Страница корзины
-def test_go_to_product_from_cart1(preparation_work):
-    cart_page = preparation_work
+@pytest.mark.parametrize("locator", [PRODUCT_IMG_LINKS_IN_CART, PRODUCT_LINKS_IN_CART])
+def test_go_to_product_from_cart(preparation_work, locator):
+    driver = adding_anyone_product_in_cart(preparation_work)
 
-    title_product = cart_page.add_item_to_cart_from_related_products_on_product_card()
-    cart_page.find_and_click_on_element(By.XPATH, locator.img_element)
-    cart_page.element_should_have_text(By.XPATH, locator.product_title_in_new_page, title_product,
-                                       test_data.assertion_error_not_equals_text_with_title_page)
+    cart_page = CartPage(driver)
+    product_title = cart_page.get_product_text_by(0)
+    cart_page.go_to_product(locator)
 
-
-def test_go_to_product_from_cart2(preparation_work):
-    cart_page = preparation_work
-
-    title_product = cart_page.add_item_to_cart_from_related_products_on_product_card()
-    cart_page.find_and_click_on_element(By.XPATH, f"//td[@data-title='Товар']/a[contains(text(), '{title_product}')]")
-    cart_page.element_should_have_text(By.XPATH, locator.product_title_in_new_page, title_product,
-                                       test_data.assertion_error_not_equals_text_with_title_page)
+    product = ProductPage(cart_page.driver, product_title)
+    product_title = product_title.capitalize()
+    assert product_title == product.get_title(), "Couldn't go to selected product"
 
 
-def test_modify_count_of_prod_in_cart(preparation_work):
-    cart_page = preparation_work
+@pytest.mark.parametrize("direction", ["increase", "decrease"])
+def test_modify_count_of_product_in_cart(preparation_work, direction):
+    driver = adding_anyone_product_in_cart(preparation_work)
 
-    cart_page.add_item_to_cart_from_related_products_on_product_card()
-    cart_page.print_in_field(By.XPATH, locator.count_of_product_on_cart_page, "6")
-    cart_page.find_and_click_on_element(By.NAME, locator.apply_coupon_on_cart_page)
+    cart_page = CartPage(driver)
+    quantity = cart_page.get_quantity_of_product()
+    cart_page.modify_quantity_of_product(quantity, direction)
+    updated_notification = cart_page.get_updated_notification()
+    assert updated_notification == "Cart updated.", "Couldn't update cart"
 
 
 def test_remove_product_added_in_cart(preparation_work):
-    cart_page = preparation_work
+    driver = adding_anyone_product_in_cart(preparation_work)
 
-    title_product = cart_page.remove_product_added_in_cart()
-    cart_page.expected_text_consist_in_searching_element(By.XPATH, locator.notification_element,
-                                        title_product, test_data.assertion_error_in_test_remove_product_added_in_cart)
+    cart_page = CartPage(driver)
+    cart_page.remove_product()
+    assert cart_page.is_cart_empty(), "Couldn't remove product from cart"
 
 
 def test_recovery_product_after_removing(preparation_work):
-    cart_page = preparation_work
+    driver = adding_anyone_product_in_cart(preparation_work)
 
-    removed_product = cart_page.remove_product_added_in_cart()
-    cart_page.find_and_click_on_element(By.LINK_TEXT, locator.recovery_product)
-    cart_page.element_should_have_text(By.XPATH, f"//td[@data-title='Товар']/a[contains(text(), '{removed_product}')]",
-                                       removed_product, test_data.assertion_error_test_recovery_product_after_removing)
+    cart_page = CartPage(driver)
+    cart_page.remove_product()
+
+    if cart_page.is_cart_empty():
+        cart_page.recovery_product()
+
+        assert not cart_page.is_cart_empty(), "Couldn't recovery removed product"
+        return
+
+    assert False, "Couldn't recovery removed product"
 
 
-def test_apply_promo_code_on_cart_page(preparation_work):
-    cart_page = preparation_work
+@pytest.mark.parametrize("coupon", ["GIVEMEHALYAVA", "SERT500", "Pedro-pedro pedro Peee"])
+def test_apply_coupon(preparation_work, coupon):
+    driver = adding_anyone_product_in_cart(preparation_work)
 
-    cart_page.add_item_to_cart_from_related_products_on_product_card()
-    alert_of_apply_coupon = cart_page.apply_coupon(test_data.promo_code, locator.notification_element)
+    cart_page = CartPage(driver)
+    cart_page.apply_coupon(coupon)
+    message = cart_page.get_discount_text_or_error_message()
 
-    if len(alert_of_apply_coupon) > 0:
-        # print("\n" + alert_of_apply_coupon)
-        cart_page.get_element_lt(By.XPATH, locator.overlay_block2)
+    if "Неверный купон" in message:
         assert True
+        return
 
-
-def test_apply_certificate_on_cart_page(preparation_work):
-    cart_page = preparation_work
-
-    cart_page.add_item_to_cart_from_related_products_on_product_card()
-    alert_of_apply_coupon = cart_page.apply_coupon(test_data.certificate, locator.notification_element)
-
-    if len(alert_of_apply_coupon) > 0:
-        # print("\n" + alert_of_apply_coupon)
-        cart_page.get_element_lt(By.XPATH, locator.overlay_block2)
-        assert True
-
-
-def test_apply_not_exist_coupon_on_cart_page(preparation_work):
-    cart_page = preparation_work
-
-    cart_page.add_item_to_cart_from_related_products_on_product_card()
-    alert_of_apply_coupon = cart_page.apply_coupon(test_data.not_exist_coupon, locator.not_success_alert)
-
-    assert len(alert_of_apply_coupon) > 0 and alert_of_apply_coupon == test_data.incorrect_coupon, \
-        test_data.assertion_error_with_incorrect_coupon
+    assert coupon in message.upper(), "Couldn't apply coupon"
 
 
 def test_remove_applied_coupon(preparation_work):
-    cart_page = preparation_work
+    driver = adding_anyone_product_in_cart(preparation_work)
 
-    cart_page.add_item_to_cart_from_related_products_on_product_card()
+    cart_page = CartPage(driver)
+    cart_page.apply_coupon("GIVEMEHALYAVA")
+    message = cart_page.get_discount_text_or_error_message()
 
-    try:
-        cart_page.removing_applied_coupons()
-    except TimeoutException:
-        cart_page.apply_promo_code()
-        cart_page.find_and_click_on_element(By.LINK_TEXT, locator.link_to_remove_coupon)
-        cart_page.element_should_have_text(By.XPATH, locator.notification_about_deleted_coupon,
-                                       test_data.coupon_removed, test_data.assertion_error_cannot_remove_coupon)
+    if "GIVEMEHALYAVA" in message:
+        cart_page.remove_coupon()
+
+        assert cart_page.is_coupon_removed(), "Couldn't remove coupon"

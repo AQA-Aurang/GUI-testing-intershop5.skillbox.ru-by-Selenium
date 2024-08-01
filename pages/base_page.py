@@ -1,157 +1,142 @@
-import configparser
-import data.locators as locator
-import data.test_data as test_data
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support.select import Select
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 
-def get_element_in_another_element(element, type_of_locator, locator):
-    return element.find_element(type_of_locator, locator)
-
-
-def get_elements_in_another_element(element, type_of_locator, locator):
-    return element.find_elements(type_of_locator, locator)
-
-
-def is_visibility(type_of_locator, locator):
-    return EC.visibility_of_element_located((type_of_locator, locator))
+LOGIN_LINK_IN_HEADER = (By.CLASS_NAME, "account")
+LINK_TO_MY_ACCOUNT_PAGE_FROM_NAVBAR = (By.XPATH, "//li[@id='menu-item-30']//a[1]")
+LINK_TO_MY_ACCOUNT_PAGE_FROM_FOOTER = (By.XPATH, "//aside[@id='pages-2']/ul[1]/li[4]/a[1]")
 
 
 class BasePage:
+    CATALOG_LINK_IN_NAVBAR = (By.XPATH, "//li[@id='menu-item-46']")
+    CATALOG_ITEMS_IN_NAVBAR = (By.XPATH, "//li[@id='menu-item-46']/ul/li/a")
+    SUB_CATALOG_ITEMS_IN_NAVBAR = (By.XPATH, "//li[@id='menu-item-46']/ul/li/ul/li/a")
+    SEARCH_FIELD = (By.CLASS_NAME, "search-field")
+    SEARCH_BUTTON = (By.CLASS_NAME, "searchsubmit")
+    CHECKOUT_ITEM_IN_NAVBAR = (By.XPATH, "//li[@id='menu-item-31']/a")
+    CHECKOUT_ITEM_IN_FOOTER = (By.XPATH, "//aside[@id='pages-2']/ul[1]/li[5]/a")
+
     def __init__(self, driver):
         self.driver = driver
 
-        config = configparser.ConfigParser()
-        config.read('./../config.ini')
+    def get_title(self):
+        return self.driver.title
 
-        for username, password in config["users"].items():
-            if username == "ferdinand":
-                self.default_username = username.capitalize()
-                self.default_password = password
+    def wait_for_element(self, locator, timeout=10):
+        self.driver.implicitly_wait(0)
+        wait = WebDriverWait(self.driver, timeout)
+        return wait.until(EC.presence_of_element_located(locator))
 
-    def open_page(self, url="https://intershop5.skillbox.ru"):
-        self.driver.get(url)
+    def element_is_clickable(self, locator, timeout=10):
+        self.driver.implicitly_wait(0)
+        wait = WebDriverWait(self.driver, timeout)
+        return wait.until(EC.element_to_be_clickable(locator))
 
-    def get_element(self, type_of_locator, locator):
-        return WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((type_of_locator, locator)))
+    def element_is_visible(self, locator, timeout=10):
+        self.driver.implicitly_wait(0)
+        wait = WebDriverWait(self.driver, timeout)
+        return wait.until(EC.visibility_of_element_located(locator))
 
-    # def get_element_with_te(self, type_of_locator, locator):
-    #     try:
-    #         element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((type_of_locator, locator)))
-    #         return element
-    #
-    #     except TimeoutException as t:
-    #         print(f"TimeoutException in getting element - {t.args}")
-    #         return self.driver
+    def get_text_of_element(self, locator):
+        return self.wait_for_element(locator).text
 
-    def get_element_lt(self, type_of_locator, locator):
-        return WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((type_of_locator, locator)))
+    def get_element_from_another_element(self, element: WebElement, selector_type, selector, timeout=10):
+        self.driver.implicitly_wait(0)
+        wait = WebDriverWait(self.driver, timeout)
+        wait.until(EC.visibility_of(element))
+        return element.find_element(selector_type, selector)
 
-    def get_element_and_text(self, type_of_locator, locator):
-        element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((type_of_locator, locator)))
-        return element, element.text
+    def get_elements_from_another_element(self, element, selector_type, selector, timeout=10):
+        self.driver.implicitly_wait(0)
+        wait = WebDriverWait(self.driver, timeout)
+        wait.until(EC.visibility_of(element))
+        return element.find_elements(selector_type, selector)
 
-    def click_element(self, element):
-        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(element))
+    def wait_for_elements(self, locator, timeout=10):
+        self.driver.implicitly_wait(0)
+        wait = WebDriverWait(self.driver, timeout)
+        return wait.until(EC.presence_of_all_elements_located(locator))
+
+    def click(self, locator):
+        self.wait_for_element(locator).click()
+
+    def click_by(self, element: WebElement, timeout=10):
+        self.driver.implicitly_wait(0)
+        wait = WebDriverWait(self.driver, timeout)
+        wait.until(EC.element_to_be_clickable(element))
         element.click()
 
-    def get_elements(self, type_of_locator, locator):
-        return WebDriverWait(self.driver, 20).until(EC.presence_of_all_elements_located((type_of_locator, locator)))
+    def type(self, locator, text):
+        element = self.wait_for_element(locator)
+        element.clear()
+        element.send_keys(text)
 
-    # def get_elements_with_te(self, type_of_locator, locator):
-    #     try:
-    #         elements = WebDriverWait(self.driver, 30).until(EC.presence_of_all_elements_located((type_of_locator, locator)))
-    #         return elements
-    #
-    #     except TimeoutException as t:
-    #         print(f"TimeoutException in getting elements - {t.args}")
-    #         return WebDriverWait(self.driver, 30).until(EC.presence_of_all_elements_located((type_of_locator, locator)))
+    def go_to_main_page_from_navbar(self):
+        pass
 
-    def get_elements_lt(self, type_of_locator, locator):
-        return WebDriverWait(self.driver, 30).until(EC.presence_of_all_elements_located((type_of_locator, locator)))
+    def go_to_catalog_page_from_navbar(self):
+        self.click(self.CATALOG_LINK_IN_NAVBAR)
 
-    def find_and_click_on_element(self, type_of_locator, locator):
-        element = self.get_element(type_of_locator, locator)
-        self.click_element(element)
+    def go_to_another_catalogs_page_from_navbar(self, index=0):
+        general_catalog = self.wait_for_element(self.CATALOG_LINK_IN_NAVBAR)
 
-    def find_and_submit_on_button(self, type_of_locator, locator):
-        element = self.get_element(type_of_locator, locator)
-        element.submit()
+        action_chains = ActionChains(self.driver)
+        action_chains.move_to_element(general_catalog).perform()
 
-    def go_to_bottom(self):
-        return self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        catalog_items = self.wait_for_elements(self.CATALOG_ITEMS_IN_NAVBAR)
+        catalog_item_text = catalog_items[index].text
+        catalog_items[index].click()
 
-    def element_should_have_text(self, type_of_locator, locator, text, err_description):
-        element = self.get_element(type_of_locator, locator)
-        assert element.text == text, err_description
+        return catalog_item_text.capitalize()
 
-    def expected_text_consist_in_searching_element(self, type_of_locator, locator, text, err_description):
-        element = self.get_element(type_of_locator, locator)
-        assert text in element.text, err_description
+    def go_to_sub_catalog_page_from_navbar(self, catalog_index=0, sub_catalog_index=0):
+        general_catalog = self.wait_for_element(self.CATALOG_LINK_IN_NAVBAR)
+        action_chains = ActionChains(self.driver)
+        action_chains.move_to_element(general_catalog).perform()
 
-    def move_down_in_altitude_by(self, point):
-        height = self.driver.execute_script("return window.innerHeight;")
-        self.driver.execute_script(f"window.scrollTo(0, {height * point});")
+        catalog_items = self.wait_for_elements(self.CATALOG_ITEMS_IN_NAVBAR)
+        catalog_item = catalog_items[catalog_index]
+        action_chains = ActionChains(self.driver)
+        action_chains.move_to_element(catalog_item).perform()
 
-    def find_and_clear_field(self, type_of_locator, locator):
-        field = self.get_element(type_of_locator, locator)
-        field.clear()
+        sub_catalog_items = self.wait_for_elements(self.SUB_CATALOG_ITEMS_IN_NAVBAR)
+        sub_catalog_item = sub_catalog_items[sub_catalog_index]
+        sub_catalog_item_text = sub_catalog_item.text
+        sub_catalog_item.click()
 
-        return field
+        return sub_catalog_item_text.capitalize()
 
-    def print_in_field(self, type_of_locator, locator, new_value):
-        field = self.find_and_clear_field(type_of_locator, locator)
-        field.send_keys(new_value)
+    def go_to_cart_page_from_navbar(self):
+        pass
 
-        return self.driver
+    def go_to_checkout_page_from_navbar(self):
+        self.click(self.CHECKOUT_ITEM_IN_NAVBAR)
 
-    def go_to_product(self):
-        self.find_and_click_on_element(By.XPATH, locator.product_in_sale_block_on_main_page)
+    def go_to_search_page(self, search_text):
+        self.type(self.SEARCH_FIELD, search_text)
+        self.click(self.SEARCH_BUTTON)
 
-    def get_product_and_his_title_on_product_card(self):
-        if is_visibility(By.XPATH, locator.product_card_footers):
-            products_card_footers = self.get_elements(By.XPATH, locator.product_card_footers)
-        else:
-            return "Element not visible", 0
+    def go_to_all_products_from_footer(self):
+        pass
 
-        for i in range(len(products_card_footers)):
-            product_card_footer = products_card_footers[i]
-            title_product = get_element_in_another_element(product_card_footer, By.XPATH, "//a/h3").text
-            button_to_add_cart = self.get_element(By.XPATH, locator.button_in_product_footer)
+    def go_to_main_page_from_footer(self):
+        pass
 
-            if button_to_add_cart.text.capitalize() == "В корзину":
-                return title_product, i
+    def go_to_cart_page_from_footer(self):
+        pass
 
-        return "To cart not found", 0
+    def go_to_my_account_page_from_footer(self):
+        pass
 
-    def add_item_to_cart_from_related_products_on_product_card(self):
-        self.open_page()
-        self.go_to_product()
+    def go_to_checkout_page_from_footer(self):
+        self.click(self.CHECKOUT_ITEM_IN_FOOTER)
 
-        while True:
-            title_product, item_number = self.get_product_and_his_title_on_product_card()
-            if title_product != "Element not visible" and title_product != "To cart not found":
-                break
+    def go_to_registration_page_from_footer(self):
+        pass
 
-            self.driver.refresh()
-
-        self.find_and_click_on_element(By.XPATH, f"//ul[@class='products columns-4']//li/div[2]/div/a[{item_number + 1}]")
-        self.find_and_click_on_element(By.XPATH, locator.detail_link)
-
-        return title_product
-
-    def apply_coupon(self, coupon, locator_elem):
-        self.print_in_field(By.ID, locator.field_for_coupon_input, coupon)
-        self.find_and_click_on_element(By.NAME, locator.apply_coupon_on_cart_page)
-        alert_element = self.get_element(By.XPATH, locator_elem)
-
-        return alert_element.text
-
-    def removing_applied_coupons(self):
-        coupon = self.get_element(By.XPATH, locator.discount_row)
-
-        if test_data.promo_code in coupon.text:
-            row = get_element_in_another_element(coupon, By.XPATH, "./..")
-            link_in_column = get_element_in_another_element(row, By.CSS_SELECTOR, "td a")
-            self.click_element(link_in_column)
+    def scroll_to_element(self, element):
+        self.driver.execute_script("arguments[0].scrollIntoView();", element)

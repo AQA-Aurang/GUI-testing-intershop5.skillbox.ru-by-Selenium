@@ -5,12 +5,12 @@ import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
-from conftest2 import chrome_browser as driver
-from conftest2 import get_webdriver_instance_and_open_main_page as preparation_work_for_main_page
-from conftest2 import get_webdriver_instance_and_open_catalog_and_sub_catalog_page as preparation_work
-from pages2.catalog_and_category_page import CatalogAndCategoryPage
-from pages2.product_card_page import ProductPage
-from pages2.search_page import SearchPage
+from conftest import chrome_browser as driver
+from conftest import get_webdriver_instance_and_open_main_page as preparation_work_for_main_page
+from conftest import get_webdriver_instance_and_open_catalog_and_sub_catalog_page as preparation_work
+from pages.catalog_and_category_page import CatalogAndCategoryPage
+from pages.product_card_page import ProductPage
+from pages.search_page import SearchPage
 
 
 # Страница каталога товаров

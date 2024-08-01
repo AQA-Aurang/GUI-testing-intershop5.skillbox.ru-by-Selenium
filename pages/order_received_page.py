@@ -1,6 +1,6 @@
 from selenium.webdriver.common.by import By
 
-from pages2.base_page import BasePage
+from pages.base_page import BasePage
 
 
 class OrderReceivedPage(BasePage):

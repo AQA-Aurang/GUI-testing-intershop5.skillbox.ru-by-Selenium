@@ -2,11 +2,11 @@ import time
 
 import pytest
 
-from conftest2 import chrome_browser as driver
-from conftest2 import get_webdriver_instance_and_open_my_account_page as preparation_work_to_auth
-from pages2.checkout_page import authorisation, adding_anyone_product_in_cart_and_go_to_checkout
-from pages2.catalog_and_category_page import CatalogAndCategoryPage
-from pages2.order_received_page import OrderReceivedPage
+from conftest import chrome_browser as driver
+from conftest import get_webdriver_instance_and_open_my_account_page as preparation_work_to_auth
+from pages.checkout_page import authorisation, adding_anyone_product_in_cart_and_go_to_checkout
+from pages.catalog_and_category_page import CatalogAndCategoryPage
+from pages.order_received_page import OrderReceivedPage
 
 
 # -------------------------------------------------

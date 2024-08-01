@@ -1,5 +1,5 @@
-from conftest2 import chrome_browser as driver
-from conftest2 import get_webdriver_instance_and_open_registration_page as preparation_work
+from conftest import chrome_browser as driver
+from conftest import get_webdriver_instance_and_open_registration_page as preparation_work
 
 
 def test_go_to_register_new_user(preparation_work):

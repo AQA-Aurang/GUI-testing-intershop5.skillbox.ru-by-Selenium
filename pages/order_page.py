@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 
-from pages2.base_page import BasePage
-from pages2.order_detail_page import OrderDetailPage
+from pages.base_page import BasePage
+from pages.order_detail_page import OrderDetailPage
 
 
 class OrderPage(BasePage):

@@ -1,5 +1,5 @@
 from selenium.webdriver.common.by import By
-from pages2.base_page import BasePage
+from pages.base_page import BasePage
 
 NAME_FIELD = (By.ID, "account_first_name")
 SECOND_NAME_FIELD = (By.ID, "account_last_name")

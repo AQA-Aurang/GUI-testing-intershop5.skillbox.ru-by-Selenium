@@ -1,9 +1,9 @@
 import time
 
 from selenium.webdriver.common.by import By
-from pages2.product_card_page import get_any_product_from_catalog
-from pages2.product_card_page import ProductPage
-from pages2.base_page import BasePage
+from pages.product_card_page import get_any_product_from_catalog
+from pages.product_card_page import ProductPage
+from pages.base_page import BasePage
 from selenium.common.exceptions import TimeoutException
 
 PRODUCT_LINKS_IN_CART = (By.XPATH, "//td[@data-title='Товар']//a")

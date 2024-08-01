@@ -1,13 +1,13 @@
 import pytest
 from selenium.webdriver.common.by import By
-from conftest2 import chrome_browser as driver
-from conftest2 import get_webdriver_instance_and_open_main_page as preparation_work_for_main_page
-from conftest2 import get_webdriver_instance_and_open_my_account_page as preparation_work
-from conftest2 import get_username_password
-from pages2.base_page import LOGIN_LINK_IN_HEADER, LINK_TO_MY_ACCOUNT_PAGE_FROM_NAVBAR, \
+from conftest import chrome_browser as driver
+from conftest import get_webdriver_instance_and_open_main_page as preparation_work_for_main_page
+from conftest import get_webdriver_instance_and_open_my_account_page as preparation_work
+from conftest import get_username_password
+from pages.base_page import LOGIN_LINK_IN_HEADER, LINK_TO_MY_ACCOUNT_PAGE_FROM_NAVBAR, \
     LINK_TO_MY_ACCOUNT_PAGE_FROM_FOOTER
-from pages2.my_account_page import MyAccountPage
-from pages2.account_edit_data_page import NAME_FIELD, SECOND_NAME_FIELD, DISPLAY_FIELD, EMAIL_FIELD
+from pages.my_account_page import MyAccountPage
+from pages.account_edit_data_page import NAME_FIELD, SECOND_NAME_FIELD, DISPLAY_FIELD, EMAIL_FIELD
 
 
 # Информация на стр. Мой аккаунт
