@@ -52,7 +52,7 @@ def test_recovery_product_after_removing(preparation_work):
     if cart_page.is_cart_empty():
         cart_page.recovery_product()
 
-        assert not cart_page.is_cart_empty(), "Couldn't recovery removed product"
+        assert cart_page.get_quantity_products_in_cart() > 0, "Couldn't recovery removed product"
         return
 
     assert False, "Couldn't recovery removed product"

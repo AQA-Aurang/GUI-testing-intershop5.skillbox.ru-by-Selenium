@@ -32,6 +32,7 @@ class CartPage(BasePage):
     COUPON_REMOVE_LINK = (By.LINK_TEXT, "[Удалить]")
     SUCCESS_MESSAGE_ABOUT_REMOVED_COUPON = (By.XPATH, "//div[@role='alert']")
     PLACE_ORDER = (By.XPATH, "//a[contains(@class,'checkout-button button')]")
+    PRODUCTS_IN_CART = (By.XPATH, "//td[@data-title='Товар']//a")
 
     def __init__(self, driver):
         super().__init__(driver)
@@ -101,3 +102,11 @@ class CartPage(BasePage):
             return True
         except TimeoutException:
             return False
+
+    def get_quantity_products_in_cart(self):
+        try:
+            products = self.wait_for_elements(self.PRODUCTS_IN_CART)
+
+            return len(products)
+        except TimeoutException:
+            return 0
