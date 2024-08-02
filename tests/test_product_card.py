@@ -56,11 +56,11 @@ def test_zoom_product_with_magnifying_glass_on_product_card(preparation_work_cat
                ".png" in img_title, "Couldn't open image"
 
 
-@pytest.mark.parametrize("mark, comment", [(1, "Не советую, мне не понравилось"),
-                                           (2, "Так себе, можно найти по лучше за такую цену"),
-                                           (3, "В целом всё норм, ничего плохого не могу сказать, получил то что заказывал"),
-                                           (4, "Не плохая вешь, мне понравилось, однозначно могу посоветовать"),
-                                           (5, "Берите не пожалейте, меня устраивает, уже который год пользуюсь")])
+@pytest.mark.parametrize("mark, comment", [(1, "Не советую, мне не понравилось..."),
+                                           (2, "Так себе, можно найти и по лучше за такую цену"),
+                                           (3, "В целом всё норм, ничего плохого не могу сказать, получил то что заказывал и пожалуй могу посоветовать"),
+                                           (4, "Не плохая вешь, мне понравилось, однозначно могу посоветовать, берите"),
+                                           (5, "Берите не пожалейте, меня устраивает, уже несколько лет пользуюсь пользуюсь")])
 @pytest.mark.xfail(reason="Only in duplicate case")
 def test_leave_feedback_for_product(preparation_work_account_page, mark, comment):
     my_account_page = preparation_work_account_page
