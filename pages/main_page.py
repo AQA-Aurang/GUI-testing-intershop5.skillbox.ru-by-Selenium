@@ -14,13 +14,18 @@ class MainPage(BasePage):
     PRODUCTS_FROM_SALES_SECTION = (By.CSS_SELECTOR, "aside#accesspress_store_product-2>ul>div>div>li")
     PRODUCTS_FROM_NEW_ARRIVALS_SECTION = (By.CSS_SELECTOR, "aside#accesspress_store_product-3>ul>div>div>li")
     PRODUCT_FROM_POSTER_SECTION = (By.ID, "accesspress_store_full_promo-2")
-    PRODUCTS_FROM_VIEWED_PRODUCTS_SECTION = (By.ID, "woocommerce_recently_viewed_products-2")
+    # PRODUCTS_FROM_VIEWED_PRODUCTS_SECTION = (By.ID, "woocommerce_recently_viewed_products-2")
+    PRODUCTS_FROM_VIEWED_PRODUCTS_SECTION = (By.XPATH, "//aside[@id='woocommerce_recently_viewed_products-2']//li")
 
     def __init__(self, driver):
         super().__init__(driver)
 
         if self.driver.title != "Skillbox — Интернет магазин":
             raise Exception(f"This is not main page, current page is: {self.driver.current_url}")
+
+    def check_and_go_back_in_main_page(self):
+        if self.get_title() != "Skillbox — Интернет магазин":
+            self.driver.get("https://intershop5.skillbox.ru")
 
     def get_catalog_and_title(self, item):
         catalogs = self.wait_for_elements(self.CATALOGS)
@@ -79,10 +84,33 @@ class MainPage(BasePage):
         header = ""
         try:
             products = self.wait_for_elements(self.PRODUCTS_FROM_VIEWED_PRODUCTS_SECTION)
+            # print("кол-во элементов в products -", len(products))
             product = products[item]
             self.scroll_to_element(product)
             header = product.find_element(By.TAG_NAME, "span").text
+
+            if '"Холодец-4"' in header:
+                header = self.replace_quotes(header)
+                # print("new header -", header)
+
+            product_link = product.find_element(By.TAG_NAME, "a")
+            self.click_by(product_link)
+
         except TimeoutException:
             print("Cannot find viewed product block")
 
         return ProductPage(self.driver, header), header
+
+    def replace_quotes(self, text):
+        """Replaces double quotes with herringbones in the given text."""
+
+        new_txt = text.replace('"', '«')
+
+        # Ищем индекс последней левой кавычки
+        last_index = new_txt.rfind('«')
+
+        # Если кавычка найдена, заменяем ее
+        if last_index != -1:
+            return new_txt[:last_index] + '»' + new_txt[last_index + 1:]
+
+        return new_txt

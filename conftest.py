@@ -7,14 +7,15 @@ from pages.my_account_page import MyAccountPage
 from pages.catalog_and_category_page import CatalogAndCategoryPage
 
 
-@pytest.fixture(scope="function")
-def chrome_browser():
-    wd = webdriver.Chrome()
-    wd.implicitly_wait(10)
+@pytest.fixture(scope="class")
+def chrome_browser(request):
+    driver = webdriver.Chrome()
+    driver.implicitly_wait(10)
+    request.cls.driver = driver
 
-    yield wd
+    yield driver
 
-    wd.quit()
+    driver.quit()
 
 
 def get_config():
@@ -32,10 +33,10 @@ def get_username_password():
 
 
 # Preparation work function for main_page
-@pytest.fixture(scope="function")
-def get_webdriver_instance_and_open_main_page(driver):
-    driver.get("https://intershop5.skillbox.ru")
-    main_page = MainPage(driver)
+@pytest.fixture(scope="class")
+def prepare_main_page(request):
+    request.cls.driver.get("https://intershop5.skillbox.ru")
+    main_page = MainPage(request.cls.driver)
 
     return main_page
 
