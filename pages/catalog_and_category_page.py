@@ -1,8 +1,9 @@
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.select import Select
 
-from .base_page import BasePage
+from pages.base_page import BasePage
 
 
 class CatalogAndCategoryPage(BasePage):
@@ -27,17 +28,17 @@ class CatalogAndCategoryPage(BasePage):
         if self.driver.title != f"{self.catalog_name} — Skillbox":
             raise Exception(f"This is not {self.catalog_name}, current page is: {self.driver.current_url}")
 
-    def get_title(self):
+    def get_title(self) -> str:
         return self.wait_for_element(self.CATALOG_AND_CATEGORY_TITLE).text.capitalize()
 
-    def select_item_from_sort_element(self, value):
+    def select_item_from_sort_element(self, value: str) -> None:
         select = Select(self.wait_for_element(self.SORT_ELEMENT))
         select.select_by_value(value)
 
-    def get_all_categories(self):
+    def get_all_categories(self) -> list[WebElement]:
         return self.wait_for_elements(self.CATEGORIES)
 
-    def use_price_filter(self, left_pixel_offset, right_pixel_offset):
+    def use_price_filter(self, left_pixel_offset: int, right_pixel_offset: int) -> tuple[int, int]:
         filter = self.wait_for_element(self.FILTER_ELEMENT)
         self.scroll_to_element(filter)
         left_slider_element = self.get_element_from_another_element(filter, By.XPATH,  self.SLIDER_IN_FILTER + "[1]")
@@ -61,11 +62,11 @@ class CatalogAndCategoryPage(BasePage):
         self.click(self.BUTTON_IN_FILTER)
         return min_fixed_price, max_fixed_price
 
-    def get_all_products_from_goods_block(self):
+    def get_all_products_from_goods_block(self) -> list[WebElement]:
         return self.wait_for_elements(self.PRODUCTS_FROM_GOODS_BLOCK)
 
-    def get_products(self):
+    def get_products(self) -> list[WebElement]:
         return self.wait_for_elements(self.PRODUCTS_IN_PAGE)
 
-    def get_pagination_items(self):
+    def get_pagination_items(self) -> list[WebElement]:
         return self.wait_for_elements(self.PAGINATION_ITEMS)
