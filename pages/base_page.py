@@ -1,11 +1,11 @@
+from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from typing import TypeVar
-
+from typing import TypeVar, Union
 
 LOGIN_LINK_IN_HEADER = (By.CLASS_NAME, "account")
 LINK_TO_MY_ACCOUNT_PAGE_FROM_NAVBAR = (By.XPATH, "//li[@id='menu-item-30']//a[1]")
@@ -13,6 +13,7 @@ LINK_TO_MY_ACCOUNT_PAGE_FROM_FOOTER = (By.XPATH, "//aside[@id='pages-2']/ul[1]/l
 
 
 class BasePage:
+    BASE_URL = "https://intershop5.skillbox.ru/"
     CATALOG_LINK_IN_NAVBAR = (By.XPATH, "//li[@id='menu-item-46']")
     CATALOG_ITEMS_IN_NAVBAR = (By.XPATH, "//li[@id='menu-item-46']/ul/li/a")
     SUB_CATALOG_ITEMS_IN_NAVBAR = (By.XPATH, "//li[@id='menu-item-46']/ul/li/ul/li/a")
@@ -20,11 +21,15 @@ class BasePage:
     SEARCH_BUTTON = (By.CLASS_NAME, "searchsubmit")
     CHECKOUT_ITEM_IN_NAVBAR = (By.XPATH, "//li[@id='menu-item-31']/a")
     CHECKOUT_ITEM_IN_FOOTER = (By.XPATH, "//aside[@id='pages-2']/ul[1]/li[5]/a")
+    LOGOUT_LINK = (By.LINK_TEXT, "Выйти")
 
     T = TypeVar("T")
 
-    def __init__(self, driver):
+    def __init__(self, driver: Union[webdriver.Chrome, webdriver.Firefox, webdriver.Edge]):
         self.driver = driver
+
+    def load(self) -> None:
+        self.driver.get(self.BASE_URL)
 
     def get_title(self) -> str:
         return self.driver.title
@@ -78,9 +83,6 @@ class BasePage:
         element.clear()
         element.send_keys(text)
 
-    def go_to_main_page_from_navbar(self):
-        pass
-
     def go_to_catalog_page_from_navbar(self) -> None:
         self.click(self.CATALOG_LINK_IN_NAVBAR)
 
@@ -113,9 +115,6 @@ class BasePage:
 
         return sub_catalog_item_text.capitalize()
 
-    def go_to_cart_page_from_navbar(self):
-        pass
-
     def go_to_checkout_page_from_navbar(self) -> None:
         self.click(self.CHECKOUT_ITEM_IN_NAVBAR)
 
@@ -123,23 +122,11 @@ class BasePage:
         self.type(self.SEARCH_FIELD, search_text)
         self.click(self.SEARCH_BUTTON)
 
-    def go_to_all_products_from_footer(self):
-        pass
-
-    def go_to_main_page_from_footer(self):
-        pass
-
-    def go_to_cart_page_from_footer(self):
-        pass
-
-    def go_to_my_account_page_from_footer(self):
-        pass
+    def logout_by_link(self) -> None:
+        self.click(self.LOGOUT_LINK)
 
     def go_to_checkout_page_from_footer(self) -> None:
         self.click(self.CHECKOUT_ITEM_IN_FOOTER)
-
-    def go_to_registration_page_from_footer(self):
-        pass
 
     def scroll_to_element(self, element) -> None:
         self.driver.execute_script("arguments[0].scrollIntoView();", element)
