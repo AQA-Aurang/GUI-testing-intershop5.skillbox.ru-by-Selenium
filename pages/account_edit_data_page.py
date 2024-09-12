@@ -21,11 +21,11 @@ class AccountEditDataPage(BasePage):
             raise Exception(
                 f"This is not account edit data page, current page is: {self.driver.title} - {self.driver.current_url}")
 
-    def modify_field(self, locator, new_value):
+    def modify_field(self, locator: tuple[str, str], new_value: str) -> None:
         self.type(locator, new_value)
         self.click(self.SAVE_BUTTON)
 
-    def change_password(self, current_password, new_password, repeat_new_password):
+    def change_password(self, current_password: str, new_password: str, repeat_new_password: str) -> None:
         self.type(self.CURRENT_PASSWORD_FIELD, current_password)
         self.type(self.NEW_PASSWORD_FIELD, new_password)
         self.modify_field(self.REPEAT_NEW_PASSWORD_FIELD, repeat_new_password)

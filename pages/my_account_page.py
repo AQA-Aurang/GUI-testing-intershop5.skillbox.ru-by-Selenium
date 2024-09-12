@@ -1,8 +1,10 @@
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 from pages.base_page import BasePage
-from .order_page import OrderPage
-from .account_edit_data_page import AccountEditDataPage
+from pages.order_page import OrderPage
+from pages.account_edit_data_page import AccountEditDataPage
+from typing import Union
 
 
 class MyAccountPage(BasePage):
@@ -25,41 +27,41 @@ class MyAccountPage(BasePage):
             raise Exception(
                 f"This is not my account page, current page is: {self.driver.title} - {self.driver.current_url}")
 
-    def authorisation(self, user_name_or_mail, password):
+    def authorisation(self, user_name_or_mail: str, password: str) -> Union[webdriver.Chrome, webdriver.Firefox, webdriver.Edge]:
         self.type(self.USER_NAME_OR_EMAIL_FIELD, user_name_or_mail)
         self.type(self.PASSWORD_FIELD, password)
         self.click(self.LOGIN_BUTTON)
 
         return self.driver
 
-    def go_to_my_orders_from_info_block(self):
+    def go_to_orders_from_info_block(self) -> OrderPage:
         self.click(self.MY_ORDERS_FROM_INFO_BLOCK)
 
         return OrderPage(self.driver)
 
-    def go_to_order_block(self):
+    def go_to_order_block(self) -> OrderPage:
         self.click(self.ORDER_BLOCK)
 
         return OrderPage(self.driver)
 
-    def go_to_edit_my_account_data_from_info_block(self):
+    def go_to_edit_my_account_data_from_info_block(self) -> AccountEditDataPage:
         self.click(self.CHANGE_DATA_FROM_INFO_BLOCK)
 
         return AccountEditDataPage(self.driver)
 
-    def go_to_account_data_block(self):
+    def go_to_account_data_block(self) -> AccountEditDataPage:
         self.click(self.ACCOUNT_DATA_BLOCK)
 
         return AccountEditDataPage(self.driver)
 
-    def get_text_after_action(self):
+    def get_text_after_action(self) -> str:
         return self.wait_for_element(self.SUCCESS_CHANGED_DATA).text
 
-    def get_error_notification(self):
+    def get_error_notification(self) -> str:
         return self.wait_for_element(self.ERROR_NOTIFICATION).text
 
-    def logout_by_link_from_info_block(self):
+    def logout_by_link_from_info_block(self) -> None:
         self.click(self.LOGOUT_FROM_INFO_BLOCK)
 
-    def logout_from_logout_block(self):
+    def logout_from_logout_block(self) -> None:
         self.click(self.LOGOUT_BLOCK)

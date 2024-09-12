@@ -16,7 +16,7 @@ class RegistrationPage(BasePage):
         if self.driver.title != "Регистрация — Skillbox":
             raise Exception(f"This is not registration page, current page is: {self.driver.title} - {self.driver.current_url}")
 
-    def registration(self, user_name, user_email, password):
+    def registration(self, user_name: str, user_email: str, password: str) -> None:
         self.type(self.USER_NAME_FIELD, user_name)
         self.type(self.USER_EMAIL_FIELD, user_email)
         self.type(self.PASSWORD_FIELD, password)

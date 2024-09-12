@@ -1,5 +1,3 @@
-from typing import Tuple
-
 import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -46,7 +44,7 @@ class MainPage(BasePage):
         with allure.step('Get products from sales section'):
             products: list[WebElement] = self.wait_for_elements(self.PRODUCTS_FROM_SALES_SECTION)
 
-        with allure.step('Get one of the product and scroll to it'):
+        with allure.step('Get one of product and scroll to it'):
             product: WebElement = products[item]
             self.scroll_to_element(product)
 
