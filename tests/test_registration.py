@@ -1,10 +1,18 @@
-from conftest import chrome_browser as driver
-from conftest import get_webdriver_instance_and_open_registration_page as preparation_work
+from faker import Faker
 
 
-def test_go_to_register_new_user(preparation_work):
-    register_page = preparation_work
-    register_page.registration("Fredie", "FredieKrug@Bkii.tj", "secret_password123")
-    registration_txt = register_page.wait_for_element(register_page.REGISTRATION_FINISHED).text
+def test_go_to_register_new_user(browser, registration_page) -> None:
+    fake = Faker()
+
+    while True:
+        name, email, password = fake.name_male(), fake.email(), fake.password()
+
+        if len(name) > 20 or len(email) > 20 or len(password) > 20:
+            continue
+        else:
+            break
+
+    registration_page.registration(fake.name_male(), fake.email(), fake.password())
+    registration_txt: str = registration_page.wait_for_element(registration_page.REGISTRATION_FINISHED).text
 
     assert registration_txt == "Регистрация завершена", "Registration was not successfully"
