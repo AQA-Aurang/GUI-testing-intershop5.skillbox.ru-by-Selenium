@@ -6,6 +6,7 @@ from pages.my_account_page import MyAccountPage
 from pages.catalog_and_category_page import CatalogAndCategoryPage
 from configparser import ConfigParser
 from pages.product_card_page import get_any_product_from_catalog, ProductPage
+from shopping_cart_page import adding_anyone_product_in_cart, CartPage
 
 BASE_URL = "https://intershop5.skillbox.ru/"
 
@@ -106,6 +107,15 @@ def catalog_and_sub_catalog_page(request) -> CatalogAndCategoryPage:
     return catalog_and_sub_catalog_page
 
 
+# Preparation work function for electronic_sub_catalog_page
+@pytest.fixture()
+def electronic_sub_catalog_page(request) -> CatalogAndCategoryPage:
+    request.cls.driver.get(BASE_URL + 'product-category/catalog/electronics/')
+    electronic_sub_catalog: CatalogAndCategoryPage = CatalogAndCategoryPage(request.cls.driver, 'Электроника')
+
+    return electronic_sub_catalog
+
+
 # Preparation work function for product page
 @pytest.fixture()
 def product_page(request) -> tuple[ProductPage, str]:
@@ -117,10 +127,9 @@ def product_page(request) -> tuple[ProductPage, str]:
     return product, product_title
 
 
-# Preparation work function for electronic_sub_catalog_page
 @pytest.fixture()
-def electronic_sub_catalog_page(request) -> CatalogAndCategoryPage:
-    request.cls.driver.get(BASE_URL + 'product-category/catalog/electronics/')
-    electronic_sub_catalog: CatalogAndCategoryPage = CatalogAndCategoryPage(request.cls.driver, 'Электроника')
+def cart_page(catalog_and_sub_catalog_page) -> CartPage:
+    driver = adding_anyone_product_in_cart(catalog_and_sub_catalog_page)
+    cart_page: CartPage = CartPage(driver)
 
-    return electronic_sub_catalog
+    return cart_page
