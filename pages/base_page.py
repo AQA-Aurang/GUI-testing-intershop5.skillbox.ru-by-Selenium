@@ -1,3 +1,5 @@
+import logging
+
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
@@ -21,12 +23,15 @@ class BasePage:
     SEARCH_BUTTON = (By.CLASS_NAME, "searchsubmit")
     CHECKOUT_ITEM_IN_NAVBAR = (By.XPATH, "//li[@id='menu-item-31']/a")
     CHECKOUT_ITEM_IN_FOOTER = (By.XPATH, "//aside[@id='pages-2']/ul[1]/li[5]/a")
-    LOGOUT_LINK = (By.LINK_TEXT, "Выйти")
+    LOGOUT_LINK = (By.CLASS_NAME, "logout")
 
     T = TypeVar("T")
 
     def __init__(self, driver: Union[webdriver.Chrome, webdriver.Firefox, webdriver.Edge]):
         self.driver = driver
+
+        logging.basicConfig(level=logging.ERROR, format='%(asctime)s %(levelname)s %(message)s')
+        self.logger = logging.getLogger()
 
     def load(self) -> None:
         self.driver.get(self.BASE_URL)
