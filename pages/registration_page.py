@@ -4,11 +4,11 @@ from pages.base_page import BasePage
 
 
 class RegistrationPage(BasePage):
-    USER_NAME_FIELD = (By.NAME, "username")
-    USER_EMAIL_FIELD = (By.NAME, "email")
-    PASSWORD_FIELD = (By.NAME, "password")
-    REGISTRATION_BUTTON = (By.NAME, "register")
-    REGISTRATION_FINISHED = (By.XPATH, "//div[@class='content-page']//div[1]")
+    USER_NAME_FIELD: tuple[str, str] = (By.NAME, "username")
+    USER_EMAIL_FIELD: tuple[str, str] = (By.NAME, "email")
+    PASSWORD_FIELD: tuple[str, str] = (By.NAME, "password")
+    REGISTRATION_BUTTON: tuple[str, str] = (By.NAME, "register")
+    REGISTRATION_FINISHED: tuple[str, str] = (By.XPATH, "//div[@class='content-page']//div[1]")
 
     def __init__(self, driver):
         super().__init__(driver)
