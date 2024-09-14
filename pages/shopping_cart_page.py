@@ -3,7 +3,7 @@ from typing import Union
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from catalog_and_category_page import CatalogAndCategoryPage
+from pages.catalog_and_category_page import CatalogAndCategoryPage
 from pages.product_card_page import get_any_product_from_catalog
 from pages.product_card_page import ProductPage
 from pages.base_page import BasePage

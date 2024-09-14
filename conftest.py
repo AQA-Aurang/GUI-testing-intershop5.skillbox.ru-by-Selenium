@@ -1,18 +1,20 @@
 import pytest
 from selenium import webdriver
+
+from pages.checkout_page import CheckoutPage, adding_anyone_product_in_cart_and_go_to_checkout
 from pages.main_page import MainPage
 from pages.registration_page import RegistrationPage
 from pages.my_account_page import MyAccountPage
 from pages.catalog_and_category_page import CatalogAndCategoryPage
 from configparser import ConfigParser
 from pages.product_card_page import get_any_product_from_catalog, ProductPage
-from shopping_cart_page import adding_anyone_product_in_cart, CartPage
+from pages.shopping_cart_page import adding_anyone_product_in_cart, CartPage
 
 BASE_URL = "https://intershop5.skillbox.ru/"
 
 
-def pytest_configure(config):
-    config.addinivalue_line("markers", "exp1: experimental mark")
+# def pytest_configure(config):
+#     config.addinivalue_line("markers", "exp1: experimental mark")
 
 
 # @pytest.fixture(scope="class", params=[webdriver.Chrome, webdriver.Firefox, webdriver.Edge])
@@ -133,3 +135,14 @@ def cart_page(catalog_and_sub_catalog_page) -> CartPage:
     cart_page: CartPage = CartPage(driver)
 
     return cart_page
+
+
+@pytest.fixture()
+def checkout_page(account_page_with_auth) -> CheckoutPage:
+    account_page_with_auth.go_to_catalog_page_from_navbar()
+    catalog_and_category_page: CatalogAndCategoryPage = CatalogAndCategoryPage(account_page_with_auth.driver)
+    checkout_page: CheckoutPage = adding_anyone_product_in_cart_and_go_to_checkout(catalog_and_category_page)
+
+    yield checkout_page
+
+    checkout_page.logout_by_link()
