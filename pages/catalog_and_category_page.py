@@ -7,19 +7,19 @@ from pages.base_page import BasePage
 
 
 class CatalogAndCategoryPage(BasePage):
-    CATALOG_AND_CATEGORY_TITLE = (By.XPATH, "//h1[@class='entry-title ak-container']")
-    SORT_ELEMENT = (By.NAME, "orderby")
-    CATEGORIES = (By.XPATH, "//ul[@class='product-categories']//li")
-    FILTER_ELEMENT = (By.ID, "woocommerce_price_filter-2")
-    SLIDER_IN_FILTER = "(//span[contains(@class,'ui-slider-handle ui-state-default')])"
-    BUTTON_IN_FILTER = (By.XPATH, "(//button[@type='submit'])[2]")
-    PRODUCTS_FROM_GOODS_BLOCK = (By.XPATH, "//ul[@class='product_list_widget']/li/a")
-    PRODUCTS_IN_PAGE = (By.XPATH, "//div[@id='primary']/div[1]/div[3]/ul[1]/li")
-    PRODUCT_TITLE = (By.XPATH, "//a[@class='collection_title']")
-    PRODUCT_BUTTON = (By.XPATH, "//div[@class='price-cart']/a")
-    PAGINATION_ITEMS = (By.XPATH, "//ul[@class='page-numbers']/li")
-    MIN_PRICE = (By.XPATH, "//div[@class='price_label']//span[1]")
-    MAX_PRICE = (By.XPATH, "//div[@class='price_label']//span[2]")
+    CATALOG_AND_CATEGORY_TITLE: tuple[str, str] = (By.XPATH, "//h1[@class='entry-title ak-container']")
+    SORT_ELEMENT: tuple[str, str] = (By.NAME, "orderby")
+    CATEGORIES: tuple[str, str] = (By.XPATH, "//ul[@class='product-categories']//li")
+    FILTER_ELEMENT: tuple[str, str] = (By.ID, "woocommerce_price_filter-2")
+    SLIDER_IN_FILTER: tuple[str, str] = "(//span[contains(@class,'ui-slider-handle ui-state-default')])"
+    BUTTON_IN_FILTER: tuple[str, str] = (By.XPATH, "(//button[@type='submit'])[2]")
+    PRODUCTS_FROM_GOODS_BLOCK: tuple[str, str] = (By.XPATH, "//ul[@class='product_list_widget']/li/a")
+    PRODUCTS_IN_PAGE: tuple[str, str] = (By.XPATH, "//div[@id='primary']/div[1]/div[3]/ul[1]/li")
+    PRODUCT_TITLE: tuple[str, str] = (By.XPATH, "//a[@class='collection_title']")
+    PRODUCT_BUTTON: tuple[str, str] = (By.XPATH, "//div[@class='price-cart']/a")
+    PAGINATION_ITEMS: tuple[str, str] = (By.XPATH, "//ul[@class='page-numbers']/li")
+    MIN_PRICE: tuple[str, str] = (By.XPATH, "//div[@class='price_label']//span[1]")
+    MAX_PRICE: tuple[str, str] = (By.XPATH, "//div[@class='price_label']//span[2]")
 
     def __init__(self, driver, catalog_name="Каталог"):
         super().__init__(driver)

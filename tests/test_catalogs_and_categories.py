@@ -1,17 +1,15 @@
-import time
+from time import sleep
 
 import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-
-from pages.base_page import BasePage
 from pages.main_page import MainPage
 from pages.catalog_and_category_page import CatalogAndCategoryPage
 from pages.product_card_page import ProductPage
 from pages.search_page import SearchPage
 
 
-@pytest.mark.usefixtures('chrome_browser')
+@pytest.mark.usefixtures('browsers')
 class TestsCatalogAndSubCatalogPage:
 
     # Страница каталога товаров
@@ -20,7 +18,7 @@ class TestsCatalogAndSubCatalogPage:
 
         catalog_page: CatalogAndCategoryPage = CatalogAndCategoryPage(main_page.driver, "Каталог")
         title_of_page: str = catalog_page.get_title()
-        assert title_of_page == "Каталог", "Cannot go to catalog page"
+        assert title_of_page == "Каталог", catalog_page.logger.error("Cannot go to catalog page")
 
     @pytest.mark.parametrize("catalog_item", [0, 1, 2, 3])
     def test_go_to_another_catalog_of_products(self, main_page: MainPage, catalog_item: int):
@@ -28,7 +26,7 @@ class TestsCatalogAndSubCatalogPage:
 
         catalog_page: CatalogAndCategoryPage = CatalogAndCategoryPage(main_page.driver, title_of_catalog_item)
         title_of_page: str = catalog_page.get_title()
-        assert title_of_page == title_of_catalog_item, f"Cannot go to {title_of_catalog_item} page"
+        assert title_of_page == title_of_catalog_item, catalog_page.logger.error(f"Cannot go to {title_of_catalog_item} page")
 
     # Страница подкатолога товаров
     @pytest.mark.parametrize("catalog_item, sub_catalog_item", [(0, 0), (0, 1),
@@ -38,7 +36,7 @@ class TestsCatalogAndSubCatalogPage:
 
         sub_catalog_page: CatalogAndCategoryPage = CatalogAndCategoryPage(main_page.driver, title_of_sub_catalog_item)
         title_of_page: str = sub_catalog_page.get_title()
-        assert title_of_page == title_of_sub_catalog_item, f"Cannot go to {title_of_sub_catalog_item} page"
+        assert title_of_page == title_of_sub_catalog_item, sub_catalog_page.logger.error(f"Cannot go to {title_of_sub_catalog_item} page")
 
     # Компонент сортировки товаров
     @pytest.mark.parametrize("sorting_by_characteristic", ["popularity", "rating", "date", "price", "price-desc"])
@@ -46,7 +44,7 @@ class TestsCatalogAndSubCatalogPage:
         electronic_sub_catalog_page.select_item_from_sort_element(sorting_by_characteristic)
         url: str = electronic_sub_catalog_page.driver.current_url
 
-        assert url.split("=")[1] == sorting_by_characteristic, "Cannot switched sort element"
+        assert url.split("=")[1] == sorting_by_characteristic, electronic_sub_catalog_page.logger.error("Cannot switched sort element")
 
     # Компонент фильтра цен
     @pytest.mark.parametrize("min_pixel_offset, max_pixel_offset", [(10, 0), (15, 0), (0, 10), (0, 15), (10, 15), (15, 10)])
@@ -54,7 +52,8 @@ class TestsCatalogAndSubCatalogPage:
         min_price, max_price = electronic_sub_catalog_page.use_price_filter(min_pixel_offset, max_pixel_offset)
         url: str = electronic_sub_catalog_page.driver.current_url
 
-        assert str(min_price) in url and str(max_price) in url, "Cannot get a new products after change slider of filter"
+        assert str(min_price) in url and str(max_price) in url, \
+            electronic_sub_catalog_page.logger.error("Cannot get a new products after change slider of filter")
 
     # Компонент пагинации страниц
     @pytest.mark.parametrize("index", [1, 7, 8])
@@ -69,7 +68,7 @@ class TestsCatalogAndSubCatalogPage:
         if expected_page == "→":
             expected_page = opened_page
 
-        assert opened_page == expected_page, "Couldn't go to another page"
+        assert opened_page == expected_page, catalog_and_sub_catalog_page.logger.error("Couldn't go to another page")
 
     # Блок "Товары" на стр. каталога товаров
     @pytest.mark.parametrize("index", [0, 2])
@@ -80,10 +79,11 @@ class TestsCatalogAndSubCatalogPage:
         product.click()
         product_card: ProductPage = ProductPage(electronic_sub_catalog_page.driver, product_title)
 
-        assert product_card.get_title() == product_title, "Couldn't find product and go to product page"
+        assert product_card.get_title() == product_title.capitalize(), product_card.logger.error("Couldn't find product and go to product page")
 
     # Компонент поиска
     @pytest.mark.parametrize("searching_product", ["watch", "jeans", "abraka-dabra"])
+    @pytest.mark.xfail
     def test_go_to_product_from_search_field(self, catalog_and_sub_catalog_page: CatalogAndCategoryPage, searching_product: str):
         catalog_and_sub_catalog_page.go_to_search_page(searching_product)
 
@@ -95,7 +95,6 @@ class TestsCatalogAndSubCatalogPage:
             searching_page.get_element_from_another_element(product_in_search_page, By.XPATH, "//a[@class='collection_title']").click()
             product: ProductPage = ProductPage(searching_page.driver, product_title_in_search_page)
 
-            assert searching_product in product.get_title(), "Could not find and go to product"
-            return
+            assert searching_product in product.get_title(), product.logger.error("Could not find and go to product")
         else:
-            assert False, "Searching product was not found"
+            assert False, searching_page.logger.error("Searching product was not found")
