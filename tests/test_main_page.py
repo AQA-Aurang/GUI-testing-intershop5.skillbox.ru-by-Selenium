@@ -5,7 +5,7 @@ from main_page import MainPage
 
 
 @allure.feature('Testing main page')
-@pytest.mark.usefixtures('chrome_browser')
+@pytest.mark.usefixtures('browsers')
 class Tests:
 
     @allure.story('testing link for go to sub catalog from main page')
@@ -20,7 +20,7 @@ class Tests:
         sub_catalog: CatalogAndCategoryPage = CatalogAndCategoryPage(main_page.driver, title)
 
         with allure.step('Check for match titles between sub catalog in main page and sub catalog page'):
-            assert sub_catalog.get_title() == title, "Couldn't get a catalog"
+            assert sub_catalog.get_title() == title, sub_catalog.logger.error("Couldn't get a catalog")
 
     @allure.story('testing link for go to product card from sales block')
     @pytest.mark.parametrize('visible_product', [5, 6])
@@ -28,7 +28,7 @@ class Tests:
         product, title = main_page.go_to_product_from_sales_section(visible_product)
 
         with allure.step('Check for match titles between product in main page and product page'):
-            assert product.get_title() == title.capitalize(), "Couldn't get a product from sales block"
+            assert product.get_title() == title.capitalize(), product.logger.error("Couldn't get a product from sales block")
 
     @allure.story('testing button in poster block for go to product page')
     @pytest.mark.xfail(
@@ -38,7 +38,7 @@ class Tests:
         product, title = main_page.get_product_and_title_from_poster_section()
 
         with allure.step('Check for match titles between product in main page and product page'):
-            assert product.get_title() == title.capitalize(), "Couldn't get a product from poster section"
+            assert product.get_title() == title.capitalize(), product.logger.error("Couldn't get a product from poster section")
 
     @allure.story('testing links for product from arrivals block')
     @pytest.mark.parametrize('visible_product', [5, 6])
@@ -46,7 +46,7 @@ class Tests:
         product, title = main_page.go_to_product_from_new_arrivals_section(visible_product)
 
         with allure.step('Check for match titles between product in main page and product page'):
-            assert product.get_title() == title.capitalize(), "Couldn't get a product from arrivals block"
+            assert product.get_title() == title.capitalize(), product.logger.error("Couldn't get a product from arrivals block")
 
     @allure.story('testing links for product from viewed products')
     def test_go_to_product_card_from_viewed_products(self, main_page: MainPage):
@@ -58,4 +58,4 @@ class Tests:
         product, title = main_page.go_to_viewed_product(1)
 
         with allure.step('Check for match titles between product in main page and product page'):
-            assert product.get_title() == title.capitalize(), "Couldn't get a product from viewed section"
+            assert product.get_title() == title.capitalize(), product.logger.error("Couldn't get a product from viewed section")

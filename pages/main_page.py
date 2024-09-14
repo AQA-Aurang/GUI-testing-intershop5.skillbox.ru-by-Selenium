@@ -9,12 +9,11 @@ from selenium.common.exceptions import TimeoutException
 
 
 class MainPage(BasePage):
-    CATALOGS = (By.XPATH, "(//div[contains(@class,'caption wow')])")
-    PRODUCTS_FROM_SALES_SECTION = (By.CSS_SELECTOR, "aside#accesspress_store_product-2>ul>div>div>li")
-    PRODUCTS_FROM_NEW_ARRIVALS_SECTION = (By.CSS_SELECTOR, "aside#accesspress_store_product-3>ul>div>div>li")
-    PRODUCT_FROM_POSTER_SECTION = (By.ID, "accesspress_store_full_promo-2")
-    # PRODUCTS_FROM_VIEWED_PRODUCTS_SECTION = (By.ID, "woocommerce_recently_viewed_products-2")
-    PRODUCTS_FROM_VIEWED_PRODUCTS_SECTION = (By.XPATH, "//aside[@id='woocommerce_recently_viewed_products-2']//li")
+    CATALOGS: tuple[str, str] = (By.XPATH, "(//div[contains(@class,'caption wow')])")
+    PRODUCTS_FROM_SALES_SECTION: tuple[str, str] = (By.CSS_SELECTOR, "aside#accesspress_store_product-2>ul>div>div>li")
+    PRODUCTS_FROM_NEW_ARRIVALS_SECTION: tuple[str, str] = (By.CSS_SELECTOR, "aside#accesspress_store_product-3>ul>div>div>li")
+    PRODUCT_FROM_POSTER_SECTION: tuple[str, str] = (By.ID, "accesspress_store_full_promo-2")
+    PRODUCTS_FROM_VIEWED_PRODUCTS_SECTION: tuple[str, str] = (By.XPATH, "//aside[@id='woocommerce_recently_viewed_products-2']//li")
 
     def __init__(self, driver):
         super().__init__(driver)
@@ -25,7 +24,6 @@ class MainPage(BasePage):
     def check_and_go_back_in_main_page(self):
         with allure.step('Check main page'):
             if self.get_title() != "Skillbox — Интернет магазин":
-                # self.driver.get("https://intershop5.skillbox.ru")
                 self.load()
 
     def get_catalog_and_title(self, item: int) -> tuple[WebElement, str]:
@@ -85,19 +83,6 @@ class MainPage(BasePage):
             wait = WebDriverWait(self.driver, 10)
             wait.until(EC.element_to_be_clickable(product_button))
             product_button.click()
-
-        # def get_product_name_by(url):
-        #     text = url.split('=')[-1]
-        #     last_hyphen_index = text.rfind("-")
-        #     # Replace all hyphen beside last
-        #     modified_text = text[:last_hyphen_index].replace("-", " ") + text[last_hyphen_index:]
-        #
-        #     return modified_text
-
-        # if "ipad air" in str(product_title).lower():
-        #     product_title = get_product_name_by(url)
-        #     product_title = product_title.replace("ipad", "iPad")
-        #     # print("product_title -", product_title)
 
         return ProductPage(self.driver, product_title), product_title
 
