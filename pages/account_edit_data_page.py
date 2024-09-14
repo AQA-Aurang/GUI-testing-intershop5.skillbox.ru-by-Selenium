@@ -1,18 +1,18 @@
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 
-NAME_FIELD = (By.ID, "account_first_name")
-SECOND_NAME_FIELD = (By.ID, "account_last_name")
-DISPLAY_FIELD = (By.ID, "account_display_name")
-EMAIL_FIELD = (By.ID, "account_email")
+NAME_FIELD: tuple[str, str] = (By.ID, "account_first_name")
+SECOND_NAME_FIELD: tuple[str, str] = (By.ID, "account_last_name")
+DISPLAY_FIELD: tuple[str, str] = (By.ID, "account_display_name")
+EMAIL_FIELD: tuple[str, str] = (By.ID, "account_email")
 
 
 class AccountEditDataPage(BasePage):
-    PAGE_HEADER = (By.CLASS_NAME, "post-title")
-    CURRENT_PASSWORD_FIELD = (By.ID, "password_current")
-    NEW_PASSWORD_FIELD = (By.ID, "password_1")
-    REPEAT_NEW_PASSWORD_FIELD = (By.ID, "password_2")
-    SAVE_BUTTON = (By.NAME, "save_account_details")
+    PAGE_HEADER: tuple[str, str] = (By.CLASS_NAME, "post-title")
+    CURRENT_PASSWORD_FIELD: tuple[str, str] = (By.ID, "password_current")
+    NEW_PASSWORD_FIELD: tuple[str, str] = (By.ID, "password_1")
+    REPEAT_NEW_PASSWORD_FIELD: tuple[str, str] = (By.ID, "password_2")
+    SAVE_BUTTON: tuple[str, str] = (By.NAME, "save_account_details")
 
     def __init__(self, driver):
         super().__init__(driver)

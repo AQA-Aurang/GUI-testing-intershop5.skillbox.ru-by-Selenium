@@ -8,17 +8,17 @@ from typing import Union
 
 
 class MyAccountPage(BasePage):
-    USER_NAME_OR_EMAIL_FIELD = (By.NAME, "username")
-    PASSWORD_FIELD = (By.NAME, "password")
-    LOGIN_BUTTON = (By.NAME, "login")
-    MY_ORDERS_FROM_INFO_BLOCK = (By.LINK_TEXT, "свои заказы")
-    ORDER_BLOCK = (By.LINK_TEXT, "Заказы")
-    CHANGE_DATA_FROM_INFO_BLOCK = (By.LINK_TEXT, "изменить данные")
-    ACCOUNT_DATA_BLOCK = (By.LINK_TEXT, "Данные аккаунта")
-    LOGOUT_FROM_INFO_BLOCK = (By.XPATH, "(//div[@class='woocommerce-MyAccount-content']//a)[1]")
-    LOGOUT_BLOCK = (By.XPATH, "//li[@class='woocommerce-MyAccount-navigation-link woocommerce-MyAccount-navigation-link--customer-logout']//a[1]")
-    SUCCESS_CHANGED_DATA = (By.CLASS_NAME, "woocommerce-message")
-    ERROR_NOTIFICATION = (By.XPATH, "//ul[@role='alert']//li[1]")
+    USER_NAME_OR_EMAIL_FIELD: tuple[str, str] = (By.NAME, "username")
+    PASSWORD_FIELD: tuple[str, str] = (By.NAME, "password")
+    LOGIN_BUTTON: tuple[str, str] = (By.NAME, "login")
+    MY_ORDERS_FROM_INFO_BLOCK: tuple[str, str] = (By.LINK_TEXT, "свои заказы")
+    ORDER_BLOCK: tuple[str, str] = (By.LINK_TEXT, "Заказы")
+    CHANGE_DATA_FROM_INFO_BLOCK: tuple[str, str] = (By.LINK_TEXT, "изменить данные")
+    ACCOUNT_DATA_BLOCK: tuple[str, str] = (By.LINK_TEXT, "Данные аккаунта")
+    LOGOUT_FROM_INFO_BLOCK: tuple[str, str] = (By.XPATH, "(//div[@class='woocommerce-MyAccount-content']//a)[1]")
+    LOGOUT_BLOCK: tuple[str, str] = (By.XPATH, "//li[@class='woocommerce-MyAccount-navigation-link woocommerce-MyAccount-navigation-link--customer-logout']//a[1]")
+    SUCCESS_CHANGED_DATA: tuple[str, str] = (By.CLASS_NAME, "woocommerce-message")
+    ERROR_NOTIFICATION: tuple[str, str] = (By.XPATH, "//ul[@role='alert']//li[1]")
 
     def __init__(self, driver):
         super().__init__(driver)
@@ -44,11 +44,6 @@ class MyAccountPage(BasePage):
 
         return OrderPage(self.driver)
 
-    def go_to_edit_my_account_data_from_info_block(self) -> AccountEditDataPage:
-        self.click(self.CHANGE_DATA_FROM_INFO_BLOCK)
-
-        return AccountEditDataPage(self.driver)
-
     def go_to_account_data_block(self) -> AccountEditDataPage:
         self.click(self.ACCOUNT_DATA_BLOCK)
 
@@ -59,9 +54,6 @@ class MyAccountPage(BasePage):
 
     def get_error_notification(self) -> str:
         return self.wait_for_element(self.ERROR_NOTIFICATION).text
-
-    def logout_by_link_from_info_block(self) -> None:
-        self.click(self.LOGOUT_FROM_INFO_BLOCK)
 
     def logout_from_logout_block(self) -> None:
         self.click(self.LOGOUT_BLOCK)

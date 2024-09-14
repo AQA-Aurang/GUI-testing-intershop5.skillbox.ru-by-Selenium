@@ -11,7 +11,7 @@ from pages.my_account_page import MyAccountPage
 from pages.main_page import MainPage
 
 
-@pytest.mark.usefixtures('chrome_browser')
+@pytest.mark.usefixtures('browsers')
 class TestsMyAccountPage:
     # Информация на стр. Мой аккаунт
     @pytest.mark.parametrize('link_to_my_acc_page', [LOGIN_LINK_IN_HEADER, LINK_TO_MY_ACCOUNT_PAGE_FROM_NAVBAR,
@@ -20,18 +20,18 @@ class TestsMyAccountPage:
         main_page.click(link_to_my_acc_page)
         my_account_page: MyAccountPage = MyAccountPage(main_page.driver)
 
-        assert my_account_page.get_title() == "Мой аккаунт — Skillbox", "Cannot go to my account page"
+        assert my_account_page.get_title() == "Мой аккаунт — Skillbox", my_account_page.logger.error("Cannot go to my account page")
 
     # Заказы на стр. Мой аккаунт
     def test_go_to_orders_from_info_block(self, account_page_with_auth_and_logout: MyAccountPage):
         my_orders: OrderPage = account_page_with_auth_and_logout.go_to_orders_from_info_block()
 
-        assert my_orders.get_title() == "Заказы", "Cannot go to orders page"
+        assert my_orders.get_title() == "Заказы", my_orders.logger.error("Cannot go to orders page")
 
     def test_go_to_orders_from_order_block(self, account_page_with_auth_and_logout: MyAccountPage):
         my_orders: OrderPage = account_page_with_auth_and_logout.go_to_order_block()
 
-        assert my_orders.get_title() == "Заказы", "Cannot go to orders page"
+        assert my_orders.get_title() == "Заказы", my_orders.logger.error("Cannot go to orders page")
 
     # Страница заказанного товара
     def test_go_to_order_details(self, account_page_with_auth_and_logout: MyAccountPage):
@@ -40,7 +40,7 @@ class TestsMyAccountPage:
         title, link = order_page.get_title_and_link(orders[0])
         order_detail_page: OrderDetailPage = order_page.click_by_this(link)
 
-        assert title in order_detail_page.get_title(), "Cannot go to order detail page"
+        assert title in order_detail_page.get_title(), order_detail_page.logger.error("Cannot go to order detail page")
 
     # Данные аккаунта на стр. Мой аккаунт
     @pytest.mark.parametrize('locator, test_data', [(NAME_FIELD, "Faridun"), (SECOND_NAME_FIELD, "Hushang-Mirzo"),
@@ -52,7 +52,7 @@ class TestsMyAccountPage:
         my_account_page: MyAccountPage = MyAccountPage(account_edit_data_page.driver)
 
         success_message: str = my_account_page.get_text_after_action()
-        assert success_message == "Account details changed successfully.", "Cannot edit account data"
+        assert success_message == "Account details changed successfully.", my_account_page.logger.error("Cannot edit account data")
 
     def test_modify_password_fields(self, account_page_with_auth_and_logout: MyAccountPage):
         account_edit_data_page: AccountEditDataPage = account_page_with_auth_and_logout.go_to_account_data_block()
@@ -60,7 +60,7 @@ class TestsMyAccountPage:
         my_account_page: MyAccountPage = MyAccountPage(account_edit_data_page.driver)
 
         success_message: str = my_account_page.get_text_after_action()
-        assert success_message == "Account details changed successfully.", "Cannot edit account password"
+        assert success_message == "Account details changed successfully.", my_account_page.logger.error("Cannot edit account password")
 
         account_edit_data_page: AccountEditDataPage = my_account_page.go_to_account_data_block()
         account_edit_data_page.change_password("ValaVala123", "ValaVala123'", "ValaVala123'")
@@ -73,10 +73,10 @@ class TestsMyAccountPage:
         account_edit_data_page.change_password(current_password, new_password, repeat_new_password)
 
         error_message: str = account_page_with_auth_and_logout.get_error_notification()
-        assert error_message == expected, "Cannot edit account password"
+        assert error_message == expected, account_page_with_auth_and_logout.logger.error("Cannot edit account password")
 
     def test_logout_by_link_in_account(self, account_page_with_auth: MyAccountPage):
         account_page_with_auth.logout_from_logout_block()
         login_button: str = account_page_with_auth.get_text_of_element((By.NAME, "login")).capitalize()
 
-        assert login_button == "Войти", "Cannot logout from logout block"
+        assert login_button == "Войти", account_page_with_auth.logger.error("Cannot logout from logout block")
