@@ -1,23 +1,12 @@
-import time
+from time import sleep
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-
 from pages.base_page import BasePage
 from pages.shopping_cart_page import CartPage
-from conftest import get_username_password
 from pages.product_card_page import get_any_product_from_catalog_light_version, ProductPage
 from pages.catalog_and_category_page import CatalogAndCategoryPage
 from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
-from selenium.webdriver.support import expected_conditions as EC
-
-
-def authorisation(preparation_work):
-    my_account_page = preparation_work
-    username, password = get_username_password()
-    my_account_page.authorisation(username, password)
-
-    return my_account_page
 
 
 def adding_anyone_product_in_cart_and_go_to_checkout(catalog_and_category_page: CatalogAndCategoryPage):
@@ -33,24 +22,27 @@ def adding_anyone_product_in_cart_and_go_to_checkout(catalog_and_category_page: 
     return checkout_page
 
 
+NAME_FIELD: tuple[str, str] = (By.ID, "billing_first_name")
+LAST_NAME_FIELD: tuple[str, str] = (By.ID, "billing_last_name")
+ADDRESS_FIELD: tuple[str, str] = (By.ID, "billing_address_1")
+CITY_FIELD: tuple[str, str] = (By.ID, "billing_city")
+STATE_FIELD: tuple[str, str] = (By.ID, "billing_state")
+
+
 class CheckoutPage(BasePage):
-    COUPON_FIELD = (By.ID, "coupon_code")
-    COUPON_BUTTON = (By.NAME, "apply_coupon")
-    LINK_TO_TURN_ON_COUPON_BLOCK = (By.CLASS_NAME, "showcoupon")
-    COUPON_SUCCESS_APPLIED = (By.CLASS_NAME, "woocommerce-message")
-    DISCOUNT_TEXT = (By.XPATH, "//th[contains(text(), 'Скидка:')]")
-    COUPON_REMOVE_LINK = (By.LINK_TEXT, "[Удалить]")
-    ALERT_ABOUT_REMOVED_COUPON = (By.XPATH, "//div[@role='alert']")
-    NAME_FIELD = (By.ID, "billing_first_name")
-    LAST_NAME_FIELD = (By.ID, "billing_last_name")
-    ADDRESS_FIELD = (By.ID, "billing_address_1")
-    CITY_FIELD = (By.ID, "billing_city")
-    STATE_FIELD = (By.ID, "billing_state")
-    ORDER_BUTTON = (By.ID, "place_order")
-    ERROR_ALERT = (By.XPATH, "//ul[@role='alert']/li")
-    ERROR_ALERTS = (By.XPATH, "//ul[@class='woocommerce-error']/li")
-    PAYMENT_METHODS = (By.XPATH, "//div[@id='payment']/ul[1]/li")
-    PAYMENT_ON_DELIVERY_METHOD = (By.XPATH, "//div[@id='payment']/ul[1]/li[2]/input")
+    COUPON_FIELD: tuple[str, str] = (By.ID, "coupon_code")
+    COUPON_BUTTON: tuple[str, str] = (By.NAME, "apply_coupon")
+    LINK_TO_TURN_ON_COUPON_BLOCK: tuple[str, str] = (By.CLASS_NAME, "showcoupon")
+    COUPON_SUCCESS_APPLIED: tuple[str, str] = (By.CLASS_NAME, "woocommerce-message")
+    DISCOUNT_TEXT: tuple[str, str] = (By.XPATH, "//th[contains(text(), 'Скидка:')]")
+    COUPON_REMOVE_LINK: tuple[str, str] = (By.LINK_TEXT, "[Удалить]")
+    ALERT_ABOUT_REMOVED_COUPON: tuple[str, str] = (By.XPATH, "//div[@role='alert']")
+    ORDER_BUTTON: tuple[str, str] = (By.ID, "place_order")
+    ERROR_ALERT: tuple[str, str] = (By.XPATH, "//ul[@role='alert']/li")
+    ERROR_ALERTS: tuple[str, str] = (By.XPATH, "//ul[@class='woocommerce-error']/li")
+    PAYMENT_METHODS: tuple[str, str] = (By.XPATH, "//ul[contains(@class,'wc_payment_methods payment_methods')]//li")
+    PAYMENT_BY_BANK_TRANSFER: tuple[str, str] = (By.XPATH, "//div[@id='payment']/ul[1]/li[1]/input")
+    PAYMENT_ON_DELIVERY_METHOD: tuple[str, str] = (By.XPATH, "//div[@id='payment']/ul[1]/li[2]/input")
 
     def __init__(self, driver):
         super().__init__(driver)
@@ -59,22 +51,22 @@ class CheckoutPage(BasePage):
             raise Exception(f"This is not Оформление заказа — Skillbox, current product name is: {self.driver.title} "
                             f"on page is: {self.driver.current_url}")
 
-    def is_coupon_already_applied(self):
+    def is_coupon_already_applied(self) -> bool:
         try:
             self.wait_for_element(self.DISCOUNT_TEXT)
             return True
         except TimeoutException:
             return False
 
-    def apply_coupon(self, coupon: str):
+    def apply_coupon(self, coupon: str) -> None:
         self.click(self.LINK_TO_TURN_ON_COUPON_BLOCK)
-        time.sleep(.3)
+        sleep(.3)
         self.type(self.COUPON_FIELD, coupon)
         self.click(self.COUPON_BUTTON)
-        time.sleep(.5)
+        sleep(.5)
 
-    def removed_applied_coupon(self):
-        element = self.wait_for_element(self.COUPON_REMOVE_LINK)
+    def removed_applied_coupon(self) -> None:
+        element: WebElement = self.wait_for_element(self.COUPON_REMOVE_LINK)
         self.scroll_to_element(element)
 
         try:
@@ -82,38 +74,28 @@ class CheckoutPage(BasePage):
         except StaleElementReferenceException:
             self.click(self.COUPON_REMOVE_LINK)
         finally:
-            time.sleep(.5)
+            sleep(.5)
 
-    def get_success_message_by_apply_coupon(self):
+    def get_success_message_by_apply_coupon(self) -> str:
         return self.get_text_of_element(self.COUPON_SUCCESS_APPLIED)
 
-    def is_coupon_removed(self):
+    def is_coupon_removed(self) -> bool:
         try:
             self.wait_for_element(self.ALERT_ABOUT_REMOVED_COUPON)
             return True
         except TimeoutException:
             return False
 
-    def clear_fields(self, *locators: [str, str]):
+    def clear_fields(self, *locators: [str, str]) -> None:
         for locator in locators:
             self.wait_for_element(locator).clear()
 
-    def filling_fields(self, **locators: [str, str]):
-        for value, tuple in locators.items():
-            self.type(tuple, value)
-            time.sleep(4)
+    def filling_fields(self, **locators: [str, str]) -> None:
+        for value, tupl in locators.items():
+            self.type(tupl, value)
+            sleep(4)
 
         self.ordering_products()
-
-    def clean_field_and_click_button(self, locator):
-        self.wait_for_element(locator).clear()
-
-        try:
-            self.click(self.ORDER_BUTTON)
-        except StaleElementReferenceException:
-            self.click(self.ORDER_BUTTON)
-        finally:
-            time.sleep(.5)
 
     def ordering_products(self):
         try:
@@ -121,27 +103,18 @@ class CheckoutPage(BasePage):
         except StaleElementReferenceException:
             self.click(self.ORDER_BUTTON)
         finally:
-            time.sleep(.5)
+            sleep(.5)
 
     def get_payment_variants(self):
         return self.wait_for_elements(self.PAYMENT_METHODS)
 
-    def get_title_by(self, payment_variant: WebElement):
-        label = self.get_element_from_another_element(payment_variant, By.TAG_NAME, "label")
-        return label.text
-
-    def is_selected(self, element: WebElement):
-        radio_button = self.get_element_from_another_element(element, By.TAG_NAME, "input")
-
-        if radio_button.is_selected():
-            return True
-
-        return False
-
-    def payment_on_delivery(self):
-        element = self.wait_for_element(self.PAYMENT_ON_DELIVERY_METHOD)
+    def select_payment_method(self, method: str):
+        payment_method = (By.XPATH, f"//label[text()[normalize-space()='{method}']]")
+        payment_method_label = self.wait_for_element(payment_method)
 
         try:
-            self.click_by(element)
-        except StaleElementReferenceException:
-            self.click(self.PAYMENT_ON_DELIVERY_METHOD)
+            self.click_by(payment_method_label)
+        except StaleElementReferenceException as er:
+            # print('StaleElementReferenceException msg -', er.msg)
+            self.logger.error(f'StaleElementReferenceException msg - {er.msg}')
+            self.click(payment_method)
