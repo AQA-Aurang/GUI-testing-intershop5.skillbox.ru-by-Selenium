@@ -78,7 +78,7 @@ class ProductPage(BasePage):
         super().__init__(driver)
         self.product_name = product_name
 
-        if self.driver.title != f"{product_name} — Skillbox" or self.driver.title != product_name:
+        if self.driver.title != f"{product_name} — Skillbox":
             raise Exception(f"This is not {product_name}, current product name is: {self.driver.title} on page is: {self.driver.current_url}")
 
     # def get_title(self) -> str:
@@ -137,7 +137,7 @@ class ProductPage(BasePage):
 
     def leave_feedback(self, star: int, comment: str) -> None:
         marks: list[WebElement] = self.wait_for_elements(self.FEEDBACK_MARKS)
-        mark: int = marks[star-1]
+        mark: WebElement = marks[star-1]
         mark.click()
 
         self.type(self.FEEDBACK_COMMENT, comment)

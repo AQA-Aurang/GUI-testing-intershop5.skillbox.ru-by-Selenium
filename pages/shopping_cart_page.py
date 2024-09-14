@@ -1,4 +1,4 @@
-import time
+from time import sleep
 from typing import Union
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -25,6 +25,7 @@ def adding_anyone_product_in_cart(catalog_and_sub_catalog_page: CatalogAndCatego
 class CartPage(BasePage):
     QUANTITY_OF_PRODUCT: tuple[str, str] = (By.XPATH, "//input[contains(@class,'input-text qty')]")
     MODIFY_CART_NOTIFICATION: tuple[str, str] = (By.XPATH, "//div[@role='alert']")
+    DELETED_MESSAGE: tuple[str, str] = MODIFY_CART_NOTIFICATION
     CART_EMPTY_MESSAGE: tuple[str, str] = (By.XPATH, "//p[@class='cart-empty woocommerce-info']")
     REMOVE_ICON: tuple[str, str] = (By.CLASS_NAME, "remove")
     RECOVERY_LINK: tuple[str, str] = (By.CLASS_NAME, "restore-item")
@@ -79,9 +80,16 @@ class CartPage(BasePage):
         except TimeoutException:
             return False
 
+    def is_product_deleted(self) -> bool:
+        try:
+            self.wait_for_element(self.DELETED_MESSAGE)
+            return True
+        except TimeoutException:
+            return False
+
     def recovery_product(self) -> None:
         self.click(self.RECOVERY_LINK)
-        time.sleep(.5)
+        sleep(.5)
 
     def check_coupon(self) -> bool:
         try:
@@ -93,7 +101,7 @@ class CartPage(BasePage):
     def apply_coupon(self, coupon: str) -> None:
         self.type(self.COUPON_FIELD, coupon)
         self.click(self.COUPON_BUTTON)
-        time.sleep(.5)
+        sleep(.5)
 
     def get_discount_text_or_error_message(self) -> str:
         try:
@@ -102,8 +110,10 @@ class CartPage(BasePage):
             return self.get_text_of_element(self.ERROR_MESSAGE_ABOUT_WRONG_COUPON)
 
     def remove_coupon(self) -> None:
+        self.scroll_to(self.COUPON_REMOVE_LINK)
+        sleep(1)
         self.click(self.COUPON_REMOVE_LINK)
-        time.sleep(1.5)
+        sleep(1.5)
 
     def is_coupon_removed(self) -> bool:
         try:

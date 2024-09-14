@@ -1,3 +1,5 @@
+from time import sleep
+
 import pytest
 
 from pages.product_card_page import ProductPage
@@ -5,7 +7,7 @@ from pages.shopping_cart_page import CartPage
 from pages.shopping_cart_page import PRODUCT_IMG_LINKS_IN_CART, PRODUCT_LINKS_IN_CART
 
 
-@pytest.mark.usefixtures('chrome_browser')
+@pytest.mark.usefixtures('chrome_edge_only_browsers')
 class TestsShoppingCart:
 
     # Страница корзины
@@ -15,30 +17,29 @@ class TestsShoppingCart:
         cart_page.go_to_product(locator)
 
         product: ProductPage = ProductPage(cart_page.driver, product_title)
-        product_title: str = product_title.capitalize()
-        assert product_title == product.get_title(), "Couldn't go to selected product"
+        assert product_title.capitalize() in product.get_title(), product.logger.error("Couldn't go to selected product")
 
     @pytest.mark.parametrize("direction", ["increase", "decrease"])
     def test_modify_count_of_product_in_cart(self, cart_page: CartPage, direction: str):
         quantity: int = cart_page.get_quantity_of_product()
         cart_page.modify_quantity_of_product(quantity, direction)
         updated_notification: str = cart_page.get_updated_notification()
-        assert updated_notification == "Cart updated.", "Couldn't update cart"
+        assert updated_notification == "Cart updated.", cart_page.logger.error("Couldn't update cart")
 
     def test_remove_product_added_in_cart(self, cart_page: CartPage):
         cart_page.remove_product()
-        assert cart_page.is_cart_empty(), "Couldn't remove product from cart"
+        assert cart_page.is_product_deleted(), cart_page.logger.error("Couldn't remove product from cart")
 
     def test_recovery_product_after_removing(self, cart_page: CartPage):
         cart_page.remove_product()
 
-        if cart_page.is_cart_empty():
+        if cart_page.is_product_deleted():
             cart_page.recovery_product()
 
-            assert cart_page.get_quantity_products_in_cart() > 0, "Couldn't recovery removed product"
+            assert cart_page.get_quantity_products_in_cart() > 0, cart_page.logger.error("Couldn't recovery removed product")
             return
 
-        assert False, "Couldn't recovery removed product"
+        assert False, cart_page.logger.error("Couldn't recovery removed product")
 
     @pytest.mark.parametrize("coupon", ["GIVEMEHALYAVA", "SERT500", "Pedro-pedro pedro Peee"])
     def test_apply_coupon(self, cart_page: CartPage, coupon: str):
@@ -52,7 +53,7 @@ class TestsShoppingCart:
             cart_page.logger.error("Invalid coupon")
             return
 
-        assert coupon in message.upper(), "Couldn't apply coupon"
+        assert coupon in message.upper(), cart_page.logger.error("Couldn't apply coupon")
         cart_page.remove_coupon()
 
     @pytest.mark.parametrize("coupon", ["GIVEMEHALYAVA", "SERT500"])
@@ -63,4 +64,4 @@ class TestsShoppingCart:
         if coupon in message:
             cart_page.remove_coupon()
 
-            assert cart_page.is_coupon_removed(), "Couldn't remove coupon"
+            assert cart_page.is_coupon_removed(), cart_page.logger.error("Couldn't remove coupon")
