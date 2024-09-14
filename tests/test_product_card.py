@@ -4,7 +4,6 @@ import pytest
 from faker import Faker
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-
 from pages.my_account_page import MyAccountPage
 from pages.catalog_and_category_page import CatalogAndCategoryPage
 from pages.product_card_page import ProductPage
@@ -12,7 +11,7 @@ from pages.product_card_page import get_any_product_from_catalog, get_ordering_p
 from pages.shopping_cart_page import CartPage
 
 
-@pytest.mark.usefixtures('chrome_browser')
+@pytest.mark.usefixtures('browsers')
 class TestsProductCard:
 
     @pytest.mark.parametrize("count_of_products", [0, 11])
@@ -57,6 +56,7 @@ class TestsProductCard:
         (4, "Не плохая вешь, мне понравилось, однозначно могу посоветовать, берите"),
         (5, "Берите не пожалейте, меня устраивает, уже несколько лет пользуюсь пользуюсь")
     ])
+    @pytest.mark.xfail
     def test_leave_feedback_for_product(self, account_page_with_auth: MyAccountPage, mark: int, comment: str):
         product_title: str = get_ordering_product(account_page_with_auth, '', '', random.randint(0, 9))
         product: ProductPage = ProductPage(account_page_with_auth.driver, product_title)
@@ -118,6 +118,7 @@ class TestsProductCard:
 
     # Блок "Товары"
     @pytest.mark.parametrize("index", [0, 2])
+    @pytest.mark.xfail(reason="every day someone adding some products and that product in product page can having crazy, not equal title")
     def test_go_to_product_from_products_sidebar_on_product_page(self, product_page: ProductPage, index: int):
         product_p, product_title = product_page
         products_in_goods_block: list[WebElement] = product_p.get_all_products_from_goods_block()

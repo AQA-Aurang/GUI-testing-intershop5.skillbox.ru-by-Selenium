@@ -4,8 +4,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, InvalidSelectorException
-
+from selenium.common.exceptions import TimeoutException, InvalidSelectorException, ElementNotInteractableException
 from pages.order_detail_page import OrderDetailPage
 from pages.base_page import BasePage
 from pages.order_page import OrderPage
@@ -14,7 +13,6 @@ from pages.my_account_page import MyAccountPage
 
 
 def get_ordering_product(my_account_page: MyAccountPage, username: str, password: str, order_num: int = 0) -> str:
-
     order_page: OrderPage = my_account_page.go_to_order_block()
     orders: list[WebElement] = order_page.get_orders()
     title, link = order_page.get_title_and_link(orders[order_num], order_num)
@@ -37,13 +35,18 @@ def get_any_product_from_catalog(catalog_and_sub_catalog_page: CatalogAndCategor
         product_title: str = ""
 
     product_link: WebElement = catalog_and_sub_catalog_page.get_element_from_another_element(product, By.TAG_NAME, "a")
-    product_link.click()
+
+    try:
+        product_link.click()
+    except ElementNotInteractableException as e:
+        catalog_and_sub_catalog_page.logger.error(f"Exception - {e.msg}")
+        catalog_and_sub_catalog_page.click_by(product_link)
 
     return catalog_and_sub_catalog_page.driver, product_title
 
 
 def get_any_product_from_catalog_light_version(catalog_and_sub_catalog_page: CatalogAndCategoryPage, item: int) -> tuple[Union[webdriver.Chrome, webdriver.Firefox, webdriver.Edge], str]:
-    products: CatalogAndCategoryPage = catalog_and_sub_catalog_page.get_products()
+    products: list[WebElement] = catalog_and_sub_catalog_page.get_products()
     product: WebElement = products[item]
     product_title: str = product.text.split("\n")[1]
 
@@ -54,32 +57,32 @@ def get_any_product_from_catalog_light_version(catalog_and_sub_catalog_page: Cat
 
 
 class ProductPage(BasePage):
-    PRODUCT_TITLE = (By.XPATH, "//h1[@class='product_title entry-title']")
-    MAGNIFYING_GLASS = (By.CLASS_NAME, "woocommerce-product-gallery__trigger")
-    IN_STOCK_OR_NOT = (By.XPATH, "//p[@class='stock out-of-stock']")
-    CART_BUTTON = (By.NAME, "add-to-cart")
-    FEEDBACK_TAB = (By.XPATH, "//a[@href='#tab-reviews']")
-    FEEDBACK_MARKS = (By.XPATH, "//p[@class='stars']//a")
-    FEEDBACK_COMMENT = (By.ID, "comment")
-    FEEDBACK_BUTTON = (By.ID, "submit")
-    PRODUCTS_FROM_RELATED_BLOCK = (By.XPATH, "//ul[@class='products columns-4']/li")
-    CATEGORY_FROM_CATEGORIES_BLOCK = (By.XPATH, "//ul[@class='product-categories']//li")
-    PRODUCTS_FROM_GOODS_BLOCK = (By.XPATH, "//ul[@class='product_list_widget']/li/a")
-    PRODUCT_QUANTITY = (By.XPATH, "//input[@type='number']")
-    PRODUCT_COUNT_IN_STOCK = (By.XPATH, "//p[@class='stock in-stock']")
-    SUCCESS_MESSAGE_AFTER_ADD_TO_CART = (By.XPATH, "//div[@role='alert']")
-    COME_BACK_LINK = (By.LINK_TEXT, "« Back")
-    DUPLICATE_WARNING = (By.XPATH, "//div[@class='wp-die-message']//p[1]")
+    PRODUCT_TITLE: tuple[str, str] = (By.XPATH, "//h1[@class='product_title entry-title']")
+    MAGNIFYING_GLASS: tuple[str, str] = (By.CLASS_NAME, "woocommerce-product-gallery__trigger")
+    IN_STOCK_OR_NOT: tuple[str, str] = (By.XPATH, "//p[@class='stock out-of-stock']")
+    CART_BUTTON: tuple[str, str] = (By.NAME, "add-to-cart")
+    FEEDBACK_TAB: tuple[str, str] = (By.XPATH, "//a[@href='#tab-reviews']")
+    FEEDBACK_MARKS: tuple[str, str] = (By.XPATH, "//p[@class='stars']//a")
+    FEEDBACK_COMMENT: tuple[str, str] = (By.ID, "comment")
+    FEEDBACK_BUTTON: tuple[str, str] = (By.ID, "submit")
+    PRODUCTS_FROM_RELATED_BLOCK: tuple[str, str] = (By.XPATH, "//ul[@class='products columns-4']/li")
+    CATEGORY_FROM_CATEGORIES_BLOCK: tuple[str, str] = (By.XPATH, "//ul[@class='product-categories']//li")
+    PRODUCTS_FROM_GOODS_BLOCK: tuple[str, str] = (By.XPATH, "//ul[@class='product_list_widget']/li/a")
+    PRODUCT_QUANTITY: tuple[str, str] = (By.XPATH, "//input[@type='number']")
+    PRODUCT_COUNT_IN_STOCK: tuple[str, str] = (By.XPATH, "//p[@class='stock in-stock']")
+    SUCCESS_MESSAGE_AFTER_ADD_TO_CART: tuple[str, str] = (By.XPATH, "//div[@role='alert']")
+    COME_BACK_LINK: tuple[str, str] = (By.LINK_TEXT, "« Back")
+    DUPLICATE_WARNING: tuple[str, str] = (By.XPATH, "//div[@class='wp-die-message']//p[1]")
 
     def __init__(self, driver, product_name: str):
         super().__init__(driver)
         self.product_name = product_name
 
-        if self.driver.title != f"{product_name} — Skillbox":
+        if self.driver.title != f"{product_name} — Skillbox" or self.driver.title != product_name:
             raise Exception(f"This is not {product_name}, current product name is: {self.driver.title} on page is: {self.driver.current_url}")
 
-    def get_title(self) -> str:
-        return self.wait_for_element(self.PRODUCT_TITLE).text.capitalize()
+    # def get_title(self) -> str:
+    #     return self.wait_for_element(self.PRODUCT_TITLE).text.capitalize()
 
     def is_quantity_field_available(self) -> bool:
         try:
@@ -90,7 +93,7 @@ class ProductPage(BasePage):
 
     def change_count_buying_product(self, count: int) -> None:
         if self.is_available_in_stock():
-            self.type(self.PRODUCT_QUANTITY, count)
+            self.type(self.PRODUCT_QUANTITY, str(count))
 
     def is_magnifying_glass_available(self) -> bool:
         try:
@@ -109,13 +112,13 @@ class ProductPage(BasePage):
         except TimeoutException:
             return True
 
-    def how_many_product_in_stock(self) -> int:
-        if self.is_available_in_stock():
-            try:
-                product_count_in_stock = self.get_text_of_element(self.PRODUCT_COUNT_IN_STOCK)
-                return int(product_count_in_stock.split(" ")[0])
-            except TimeoutException:
-                return 0
+    # def how_many_product_in_stock(self) -> int:
+    #     if self.is_available_in_stock():
+    #         try:
+    #             product_count_in_stock = self.get_text_of_element(self.PRODUCT_COUNT_IN_STOCK)
+    #             return int(product_count_in_stock.split(" ")[0])
+    #         except TimeoutException:
+    #             return 0
 
     def add_product_to_cart(self) -> None:
         self.click(self.CART_BUTTON)
@@ -178,8 +181,8 @@ class ProductPage(BasePage):
     def get_categories_from_goods_category_block(self) -> list[WebElement]:
         return self.wait_for_elements(self.CATEGORY_FROM_CATEGORIES_BLOCK)
 
-    def get_products_from_goods_block(self) -> list[WebElement]:
-        return self.wait_for_elements(self.PRODUCTS_FROM_GOODS_BLOCK)
+    # def get_products_from_goods_block(self) -> list[WebElement]:
+    #     return self.wait_for_elements(self.PRODUCTS_FROM_GOODS_BLOCK)
 
     def is_exist_feedback(self, comment: str, timeout: int = 10) -> bool:
         self.driver.implicitly_wait(0)
