@@ -1,8 +1,9 @@
+from typing import Union
+from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.select import Select
-
 from pages.base_page import BasePage
 
 
@@ -11,7 +12,7 @@ class CatalogAndCategoryPage(BasePage):
     SORT_ELEMENT: tuple[str, str] = (By.NAME, "orderby")
     CATEGORIES: tuple[str, str] = (By.XPATH, "//ul[@class='product-categories']//li")
     FILTER_ELEMENT: tuple[str, str] = (By.ID, "woocommerce_price_filter-2")
-    SLIDER_IN_FILTER: tuple[str, str] = "(//span[contains(@class,'ui-slider-handle ui-state-default')])"
+    SLIDER_IN_FILTER: str = "(//span[contains(@class,'ui-slider-handle ui-state-default')])"
     BUTTON_IN_FILTER: tuple[str, str] = (By.XPATH, "(//button[@type='submit'])[2]")
     PRODUCTS_FROM_GOODS_BLOCK: tuple[str, str] = (By.XPATH, "//ul[@class='product_list_widget']/li/a")
     PRODUCTS_IN_PAGE: tuple[str, str] = (By.XPATH, "//div[@id='primary']/div[1]/div[3]/ul[1]/li")
@@ -21,7 +22,7 @@ class CatalogAndCategoryPage(BasePage):
     MIN_PRICE: tuple[str, str] = (By.XPATH, "//div[@class='price_label']//span[1]")
     MAX_PRICE: tuple[str, str] = (By.XPATH, "//div[@class='price_label']//span[2]")
 
-    def __init__(self, driver, catalog_name="Каталог"):
+    def __init__(self, driver: Union[webdriver.Chrome, webdriver.Firefox, webdriver.Edge], catalog_name="Каталог"):
         super().__init__(driver)
         self.catalog_name = catalog_name
 
@@ -39,10 +40,16 @@ class CatalogAndCategoryPage(BasePage):
         return self.wait_for_elements(self.CATEGORIES)
 
     def use_price_filter(self, left_pixel_offset: int, right_pixel_offset: int) -> tuple[int, int]:
-        filter = self.wait_for_element(self.FILTER_ELEMENT)
-        self.scroll_to_element(filter)
-        left_slider_element = self.get_element_from_another_element(filter, By.XPATH,  self.SLIDER_IN_FILTER + "[1]")
-        right_slider_element = self.get_element_from_another_element(filter, By.XPATH, self.SLIDER_IN_FILTER + "[2]")
+        """
+        The function use_price_filter moving the left and right slider in filter element
+        :param left_pixel_offset: int, pointed in pixels to be moved
+        :param right_pixel_offset: int, pointed in pixels to be moved
+        :return: int, int, getting fixed min and max prices
+        """
+        filter_element = self.wait_for_element(self.FILTER_ELEMENT)
+        self.scroll_to(filter_element)
+        left_slider_element = self.get_element_from_another_element(filter_element, By.XPATH, self.SLIDER_IN_FILTER + "[1]")
+        right_slider_element = self.get_element_from_another_element(filter_element, By.XPATH, self.SLIDER_IN_FILTER + "[2]")
 
         min_fixed_price = None
         if left_pixel_offset > 0:

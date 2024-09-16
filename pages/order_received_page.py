@@ -1,6 +1,6 @@
+from typing import Union
+from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webelement import WebElement
-
 from pages.base_page import BasePage
 
 
@@ -8,7 +8,7 @@ class OrderReceivedPage(BasePage):
     ORDER_RECEIVED: tuple[str, str] = (By.XPATH, "//h2[text()='Заказ получен']")
     PAYMENT_METHOD: tuple[str, str] = (By.XPATH, "//li[@class='woocommerce-order-overview__payment-method method']")
 
-    def __int__(self, driver):
+    def __int__(self, driver: Union[webdriver.Chrome, webdriver.Firefox, webdriver.Edge]):
         super().__init__(driver)
 
         if self.get_title() != "Заказ получен":

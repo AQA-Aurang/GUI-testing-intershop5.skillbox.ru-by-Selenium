@@ -1,6 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-
 from pages.base_page import BasePage
 from pages.order_page import OrderPage
 from pages.account_edit_data_page import AccountEditDataPage
@@ -20,7 +19,7 @@ class MyAccountPage(BasePage):
     SUCCESS_CHANGED_DATA: tuple[str, str] = (By.CLASS_NAME, "woocommerce-message")
     ERROR_NOTIFICATION: tuple[str, str] = (By.XPATH, "//ul[@role='alert']//li[1]")
 
-    def __init__(self, driver):
+    def __init__(self, driver: Union[webdriver.Chrome, webdriver.Firefox, webdriver.Edge]):
         super().__init__(driver)
 
         if self.driver.title != "Мой аккаунт — Skillbox":
@@ -28,6 +27,11 @@ class MyAccountPage(BasePage):
                 f"This is not my account page, current page is: {self.driver.title} - {self.driver.current_url}")
 
     def authorisation(self, user_name_or_mail: str, password: str) -> Union[webdriver.Chrome, webdriver.Firefox, webdriver.Edge]:
+        """
+        :param user_name_or_mail: str, not more 20 characters
+        :param password: str, not more 20 characters
+        :return: one of 3 type of webdriver - chrome, firefox, edge
+        """
         self.type(self.USER_NAME_OR_EMAIL_FIELD, user_name_or_mail)
         self.type(self.PASSWORD_FIELD, password)
         self.click(self.LOGIN_BUTTON)
@@ -35,11 +39,19 @@ class MyAccountPage(BasePage):
         return self.driver
 
     def go_to_orders_from_info_block(self) -> OrderPage:
+        """
+        The function go_to_orders_from_info need to go order list by link from info block in account page
+        :return: order page
+        """
         self.click(self.MY_ORDERS_FROM_INFO_BLOCK)
 
         return OrderPage(self.driver)
 
     def go_to_order_block(self) -> OrderPage:
+        """
+        The function go_to_order_block need to go order list from order block in main page
+        :return: order page
+        """
         self.click(self.ORDER_BLOCK)
 
         return OrderPage(self.driver)
@@ -49,10 +61,16 @@ class MyAccountPage(BasePage):
 
         return AccountEditDataPage(self.driver)
 
-    def get_text_after_action(self) -> str:
+    def get_success_notif_after_update_data(self) -> str:
+        """
+        :return: str, success notification about updated account data
+        """
         return self.wait_for_element(self.SUCCESS_CHANGED_DATA).text
 
-    def get_error_notification(self) -> str:
+    def get_error_notif_after_update_data(self) -> str:
+        """
+        :return: str, error notification when updating account data
+        """
         return self.wait_for_element(self.ERROR_NOTIFICATION).text
 
     def logout_from_logout_block(self) -> None:

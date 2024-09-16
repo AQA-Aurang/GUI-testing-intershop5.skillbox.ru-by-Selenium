@@ -21,12 +21,11 @@ class MainPage(BasePage):
         if self.driver.title != "Skillbox — Интернет магазин":
             raise Exception(f"This is not main page, current page is: {self.driver.current_url}")
 
-    def check_and_go_back_in_main_page(self):
-        with allure.step('Check main page'):
-            if self.get_title() != "Skillbox — Интернет магазин":
-                self.load()
-
     def get_catalog_and_title(self, item: int) -> tuple[WebElement, str]:
+        """
+        :param item: int, need point which catalog on main page you would like. Have a 3 variant
+        :return: tuple[WebElement, str], catalog element and his title
+        """
         with allure.step('Get catalogs'):
             catalogs: list[WebElement] = self.wait_for_elements(self.CATALOGS)
 
@@ -39,12 +38,17 @@ class MainPage(BasePage):
         return catalog, catalog_title
 
     def go_to_product_from_sales_section(self, item: int) -> tuple[ProductPage, str]:
+        """
+        :param item: need point product on sales section in main page you would like. Have a 16 variant, but can choise only 4 cause
+        of only 4 variant is visible on page
+        :return: tuple[ProductPage, str], page and product title from main page
+        """
         with allure.step('Get products from sales section'):
             products: list[WebElement] = self.wait_for_elements(self.PRODUCTS_FROM_SALES_SECTION)
 
         with allure.step('Get one of product and scroll to it'):
             product: WebElement = products[item]
-            self.scroll_to_element(product)
+            self.scroll_to(product)
 
         with allure.step('Get product title'):
             header: str = self.get_element_from_another_element(product, By.TAG_NAME, "a").get_attribute("title")
@@ -55,12 +59,17 @@ class MainPage(BasePage):
         return ProductPage(self.driver, header), header
 
     def go_to_product_from_new_arrivals_section(self, item: int) -> tuple[ProductPage, str]:
+        """
+        :param item: need point product on sales section in main page you would like. Have a 16 variant, but can choise only 4 cause
+        of only 4 variant is visible on page
+        :return: tuple[ProductPage, str], page and product title from main page
+        """
         with allure.step('Get products from arrivals section'):
             products: list[WebElement] = self.wait_for_elements(self.PRODUCTS_FROM_NEW_ARRIVALS_SECTION)
 
         with allure.step('Get one of the product and scroll to it'):
             product: WebElement = products[item]
-            self.scroll_to_element(product)
+            self.scroll_to(product)
 
         with allure.step('Get product title'):
             header: str = self.get_element_from_another_element(product, By.TAG_NAME, "a").get_attribute("title")
@@ -71,9 +80,12 @@ class MainPage(BasePage):
         return ProductPage(self.driver, header), header
 
     def get_product_and_title_from_poster_section(self) -> tuple[ProductPage, str]:
+        """
+        :return:  tuple[ProductPage, str], page and product title from main page
+        """
         with allure.step('Get poster and scroll to it'):
             poster: WebElement = self.wait_for_element(self.PRODUCT_FROM_POSTER_SECTION)
-            self.scroll_to_element(poster)
+            self.scroll_to(poster)
 
         with allure.step('Get product title and button'):
             product_title: str = self.get_element_from_another_element(poster, By.CLASS_NAME, "promo-desc-title").text
@@ -87,6 +99,11 @@ class MainPage(BasePage):
         return ProductPage(self.driver, product_title), product_title
 
     def go_to_viewed_product(self, item: int) -> tuple[ProductPage, str]:
+        """
+        :param item: need point product on arrival section in main page you would like. Have a 14 variant, but can choise only 3 cause
+        of only 3 variant is visible on page
+        :return: tuple[ProductPage, str], page and product title from main page
+        """
         header = ""
         try:
             with allure.step('Get products from viewed section'):
@@ -94,7 +111,7 @@ class MainPage(BasePage):
 
             with allure.step('Get one of the product and scroll to it'):
                 product: WebElement = products[item]
-                self.scroll_to_element(product)
+                self.scroll_to(product)
 
             with allure.step('Get product title'):
                 header: str = product.find_element(By.TAG_NAME, "span").text
@@ -108,7 +125,7 @@ class MainPage(BasePage):
                 self.click_by(product_link)
 
         except TimeoutException:
-            print("Cannot find viewed product block")
+            self.logger.log(30, "Cannot find viewed product block", exc_info=True)
 
         return ProductPage(self.driver, header), header
 

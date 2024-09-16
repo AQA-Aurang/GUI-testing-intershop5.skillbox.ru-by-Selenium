@@ -1,5 +1,4 @@
 from selenium.webdriver.common.by import By
-
 from pages.base_page import BasePage
 
 
@@ -17,6 +16,11 @@ class RegistrationPage(BasePage):
             raise Exception(f"This is not registration page, current page is: {self.driver.title} - {self.driver.current_url}")
 
     def registration(self, user_name: str, user_email: str, password: str) -> None:
+        """
+        :param user_name: str, not more 20 characters
+        :param user_email: str, not more 20 characters
+        :param password: str, not more 20 characters
+        """
         self.type(self.USER_NAME_FIELD, user_name)
         self.type(self.USER_EMAIL_FIELD, user_email)
         self.type(self.PASSWORD_FIELD, password)
