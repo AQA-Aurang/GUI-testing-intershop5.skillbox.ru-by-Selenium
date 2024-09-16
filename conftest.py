@@ -1,6 +1,5 @@
 import pytest
 from selenium import webdriver
-
 from pages.checkout_page import CheckoutPage, adding_anyone_product_in_cart_and_go_to_checkout
 from pages.main_page import MainPage
 from pages.registration_page import RegistrationPage
@@ -13,11 +12,18 @@ from pages.shopping_cart_page import adding_anyone_product_in_cart, CartPage
 BASE_URL = "https://intershop5.skillbox.ru/"
 
 
-# def pytest_configure(config):
-#     config.addinivalue_line("markers", "exp1: experimental mark")
+@pytest.fixture(scope="class", params=[webdriver.Chrome, webdriver.Firefox, webdriver.Edge])
+def browsers(request):
+    driver = request.param()
+    driver.implicitly_wait(10)
+    driver.maximize_window()
+    request.cls.driver = driver
+
+    yield driver
+
+    driver.quit()
 
 
-# @pytest.fixture(scope="class", params=[webdriver.Chrome, webdriver.Firefox, webdriver.Edge])
 @pytest.fixture(scope="class", params=[webdriver.Chrome])
 def chrome_browser(request):
     driver = request.param()
@@ -30,9 +36,37 @@ def chrome_browser(request):
     driver.quit()
 
 
-# @pytest.fixture(scope="class", params=[webdriver.Chrome, webdriver.Firefox, webdriver.Edge])
+@pytest.fixture(scope="class", params=[webdriver.Edge])
+def edge_browser(request):
+    driver = request.param()
+    driver.implicitly_wait(10)
+    driver.maximize_window()
+    request.cls.driver = driver
+
+    yield driver
+
+    driver.quit()
+
+
+@pytest.fixture(scope="class", params=[webdriver.Firefox])
+def firefox_browser(request):
+    driver = request.param()
+    driver.implicitly_wait(10)
+    driver.maximize_window()
+    request.cls.driver = driver
+
+    yield driver
+
+    driver.quit()
+
+
 @pytest.fixture(params=[webdriver.Chrome])
 def browser(request):
+    """
+    This fixture use only in registration page
+    :param request:
+    :return:
+    """
     driver = request.param()
     driver.implicitly_wait(10)
     driver.maximize_window()
@@ -62,7 +96,7 @@ def get_username_password() -> tuple[str, str]:
 def main_page(request) -> MainPage:
     request.cls.driver.get(BASE_URL)
     main_page: MainPage = MainPage(request.cls.driver)
-    main_page.check_and_go_back_in_main_page()
+    main_page.load()
 
     return main_page
 
