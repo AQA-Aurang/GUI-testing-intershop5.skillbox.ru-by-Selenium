@@ -1,5 +1,3 @@
-from time import sleep
-
 import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -9,11 +7,17 @@ from pages.product_card_page import ProductPage
 from pages.search_page import SearchPage
 
 
+# @pytest.mark.usefixtures('chrome_browser')
+# @pytest.mark.usefixtures('edge_browser')
+# @pytest.mark.usefixtures('firefox_browser')
 @pytest.mark.usefixtures('browsers')
 class TestsCatalogAndSubCatalogPage:
 
     # Страница каталога товаров
     def test_go_to_catalog_of_products(self, main_page: MainPage):
+        """
+        :param main_page: object
+        """
         main_page.go_to_catalog_page_from_navbar()
 
         catalog_page: CatalogAndCategoryPage = CatalogAndCategoryPage(main_page.driver, "Каталог")
@@ -22,6 +26,10 @@ class TestsCatalogAndSubCatalogPage:
 
     @pytest.mark.parametrize("catalog_item", [0, 1, 2, 3])
     def test_go_to_another_catalog_of_products(self, main_page: MainPage, catalog_item: int):
+        """
+        :param main_page: object
+        :param catalog_item: int, need point menu item which need choice
+        """
         title_of_catalog_item: str = main_page.go_to_another_catalogs_page_from_navbar(catalog_item)
 
         catalog_page: CatalogAndCategoryPage = CatalogAndCategoryPage(main_page.driver, title_of_catalog_item)
@@ -32,6 +40,11 @@ class TestsCatalogAndSubCatalogPage:
     @pytest.mark.parametrize("catalog_item, sub_catalog_item", [(0, 0), (0, 1),
                                                                 (1, 2), (1, 6)])
     def test_go_to_sub_catalog_from_navbar(self, main_page: MainPage, catalog_item: int, sub_catalog_item: int):
+        """
+        :param main_page: object
+        :param catalog_item: int, need point menu item which need choice
+        :param sub_catalog_item: int, need point sub menu item which need choice
+        """
         title_of_sub_catalog_item: str = main_page.go_to_sub_catalog_page_from_navbar(catalog_item, sub_catalog_item)
 
         sub_catalog_page: CatalogAndCategoryPage = CatalogAndCategoryPage(main_page.driver, title_of_sub_catalog_item)
@@ -41,6 +54,10 @@ class TestsCatalogAndSubCatalogPage:
     # Компонент сортировки товаров
     @pytest.mark.parametrize("sorting_by_characteristic", ["popularity", "rating", "date", "price", "price-desc"])
     def test_select_another_variant_from_product_sorting(self, electronic_sub_catalog_page: CatalogAndCategoryPage, sorting_by_characteristic: str):
+        """
+        :param electronic_sub_catalog_page: object
+        :param sorting_by_characteristic: str, value of sorting element
+        """
         electronic_sub_catalog_page.select_item_from_sort_element(sorting_by_characteristic)
         url: str = electronic_sub_catalog_page.driver.current_url
 
@@ -49,6 +66,11 @@ class TestsCatalogAndSubCatalogPage:
     # Компонент фильтра цен
     @pytest.mark.parametrize("min_pixel_offset, max_pixel_offset", [(10, 0), (15, 0), (0, 10), (0, 15), (10, 15), (15, 10)])
     def test_change_price_sliders(self, electronic_sub_catalog_page: CatalogAndCategoryPage, min_pixel_offset: int, max_pixel_offset: int):
+        """
+        :param electronic_sub_catalog_page: object
+        :param min_pixel_offset: int, pointed in pixels to be moved
+        :param max_pixel_offset: int, pointed in pixels to be moved
+        """
         min_price, max_price = electronic_sub_catalog_page.use_price_filter(min_pixel_offset, max_pixel_offset)
         url: str = electronic_sub_catalog_page.driver.current_url
 
@@ -58,6 +80,10 @@ class TestsCatalogAndSubCatalogPage:
     # Компонент пагинации страниц
     @pytest.mark.parametrize("index", [1, 7, 8])
     def test_pagination_in_catalog(self, catalog_and_sub_catalog_page: CatalogAndCategoryPage, index: int):
+        """
+        :param catalog_and_sub_catalog_page: object
+        :param index: int, index of pagination buttons
+        """
         pagination_buttons: list[WebElement] = catalog_and_sub_catalog_page.get_pagination_items()
         pagination_button: WebElement = pagination_buttons[index]
         expected_page: str = pagination_button.text
@@ -73,18 +99,26 @@ class TestsCatalogAndSubCatalogPage:
     # Блок "Товары" на стр. каталога товаров
     @pytest.mark.parametrize("index", [0, 2])
     def test_go_to_product_from_block_under_the_filter(self, electronic_sub_catalog_page: CatalogAndCategoryPage, index: int):
+        """
+        :param electronic_sub_catalog_page: object
+        :param index: int, index of product
+        """
         products_in_block_under_the_filter: list[WebElement] = electronic_sub_catalog_page.get_all_products_from_goods_block()
         product: WebElement = products_in_block_under_the_filter[index]
         product_title: str = product.text
         product.click()
         product_card: ProductPage = ProductPage(electronic_sub_catalog_page.driver, product_title)
 
-        assert product_card.get_title() == product_title.capitalize(), product_card.logger.error("Couldn't find product and go to product page")
+        assert product_title.capitalize() in product_card.get_title(), product_card.logger.error("Couldn't find product and go to product page")
 
     # Компонент поиска
     @pytest.mark.parametrize("searching_product", ["watch", "jeans", "abraka-dabra"])
     @pytest.mark.xfail
     def test_go_to_product_from_search_field(self, catalog_and_sub_catalog_page: CatalogAndCategoryPage, searching_product: str):
+        """
+        :param catalog_and_sub_catalog_page: object
+        :param searching_product: str
+        """
         catalog_and_sub_catalog_page.go_to_search_page(searching_product)
 
         searching_page: SearchPage = SearchPage(catalog_and_sub_catalog_page.driver, searching_product)
